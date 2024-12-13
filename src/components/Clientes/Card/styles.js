@@ -1,12 +1,24 @@
 import styled from "styled-components";
 import { Box, Button, Paper } from '@mui/material'
 import SVG from 'react-inlinesvg'
+import EngineeringIcon from '@mui/icons-material/Engineering';
 
+export const CutomEditDetails = styled(EngineeringIcon)({
+    color: '#003C73',
+    padding: '3px 3px 2px 3px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+        '&:hover': {
+        backgroundColor: '#C0C0C0',
+        boxShadow: '2px 2px 5px #D3D3D3',
+        color: '#005F89'
+    }
+}
+)
 
 export const Container = styled(Box)({
     height: 'auto',
     display: "flex",
-    flexDirection: 'column',
     padding: '5px 20px',
     margin: '0px 0px 10px',
     backgroundColor: '#D9D9D9',
@@ -16,14 +28,14 @@ export const Container = styled(Box)({
     borderRadius: '8px',
     boxShadow: '5px 5px 10px grey',
     '& .MuiGrid-container': {
-       // flexDirection: 'column', // Muda a direção de orientação para coluna
+        // flexDirection: 'column', // Muda a direção de orientação para coluna
         width: '100%',
         boxSizing: 'border-box',
         paddingTop: '20px',
         '& .MuiGrid-item': {
             marginTop: '1px',
             paddingTop: '1px',
-         //   flex: '1 1 auto', // Ajusta a flexibilidade dos itens do grid
+            //   flex: '1 1 auto', // Ajusta a flexibilidade dos itens do grid
             minWidth: 0, // Garante que os itens não excedam o container
             '& .MuiTypography-root': {
                 color: '#003C73',
@@ -214,3 +226,4 @@ export const CancelButton = styled("button")({
         WebkitTextFillColor: '#005F89'
     }
 });
+

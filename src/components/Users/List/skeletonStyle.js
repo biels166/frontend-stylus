@@ -7,8 +7,9 @@ export const CustomBox = styled("div")({
     padding: '0px',
     display: "flex",
     flexDirection: 'column',
-    justifyContent: 'space-between',
     '& .MuiSkeleton-rectangular': {
         marginBottom: '10px',
+        borderRadius: '8px',
+        height: '130px'
     }
-});
+}); 

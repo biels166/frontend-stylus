@@ -19,7 +19,7 @@ import { Alert, Snackbar } from '@mui/material';
 export default function ProductTable({ initialData, handleReloadPage }) {
   const apiRef = useGridApiRef();
 
-  const processedRows = initialData.rows.flat().map(row => ({
+  const processedRows = initialData?.rows?.flat()?.map(row => ({
     ...row,
     id: row._id
   }));
@@ -38,6 +38,7 @@ export default function ProductTable({ initialData, handleReloadPage }) {
   const handleCloseToast = () => {
     setOpenToast(false)
   }
+  
   const columns = React.useMemo(() => {
     return [
       {
@@ -101,7 +102,7 @@ export default function ProductTable({ initialData, handleReloadPage }) {
         },
       },
     ];
-  }, [initialData.columns, unsavedChangesRef, apiRef]);
+  }, [initialData?.columns, unsavedChangesRef, apiRef]);
 
   const processRowUpdate = React.useCallback((newRow, oldRow) => {
     const rowId = newRow.id;

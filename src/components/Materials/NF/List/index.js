@@ -87,8 +87,6 @@ export const NFList = ({ clientId }) => {
         let date = dateNF.split("/")
         let novadata = new Date(date[2], date[1] - 1, date[0])
 
-        console.log(novadata)
-
         let body = {
             number: `${number}`,
             value: `${value.replace(",", ".")}`,

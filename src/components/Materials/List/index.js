@@ -24,6 +24,7 @@ import { ClientCard, MaterialCard } from '../Card/card'
 import api from '../../../services/api'
 import { Alert, Box, FormControl, InputLabel, MenuItem, Modal, Pagination, Paper, Select, Snackbar, TextField, Typography } from '@mui/material'
 import { UFS } from '../../../constants/UFS'
+import { formatCellphone, formatDocument, formatPhone } from '../../../utils'
 
 export const MaterialList = () => {
     const ITENS_PER_PERGE = 10
@@ -84,38 +85,6 @@ export const MaterialList = () => {
         setOpenToast(false)
     }
 
-    const formatDocument = (documentNumber) => {
-
-        let doc = documentNumber.replace(/\D/g, '')
-        let docType = doc.length === 14 ? 'CNPJ' : 'CPF'
-
-        return docType === 'CPF' ?
-            doc.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
-            : doc.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-
-    }
-
-    const formatCellphone = (cellphone) => {
-        let onlyNumber = cellphone.replace(/\D/g, '')
-
-        const regex = /^(\d{2})(\d{5})(\d{4})$/;
-
-        if (onlyNumber.match(regex)) {
-            return onlyNumber.replace(regex, '($1) $2-$3')
-        }
-
-    }
-
-    const formatPhone = (phoneNumber) => {
-        let onlyNumber = phoneNumber.replace(/\D/g, '')
-
-        const regex = /^(\d{2})(\d{4})(\d{4})$/;
-
-        if (onlyNumber.match(regex)) {
-            return onlyNumber.replace(regex, '($1) $2-$3')
-        }
-
-    }
 
     async function list(pageNumber) {
         setLoadingList(true)
@@ -215,7 +184,6 @@ export const MaterialList = () => {
         await api.get('/material/list/optType')
             .then(
                 response => {
-                    console.log(response.data)
                     setListOptType(response.data)
                     setSelectedType("")
                     setLoadingList(false)
@@ -307,7 +275,6 @@ export const MaterialList = () => {
                                 value={selectedCode}
                                 onChange={(evt) => {
                                     let value = evt.target.value
-                                    console.log(value)
                                     setSelectedCode(value)
                                 }}
                                 label="Código do Material"

@@ -1,7 +1,16 @@
 import styled from "styled-components";
 import { Box, Button, Pagination, Paper } from '@mui/material'
 import SVG from 'react-inlinesvg'
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 
+export const ViewIcon = styled(VisibilityRoundedIcon)({
+    color: '#003C73'
+})
+
+export const BlockViewIcon = styled(VisibilityOffRoundedIcon)({
+    color: '#808080'
+})
 
 export const CustomPaper = styled(Box)({
     height: '100%',
@@ -93,6 +102,7 @@ export const CustomHeader = styled("div")({
 
 export const AddButton = styled("button")({
     backgroundColor: '#003C73',
+    boxShadow: '1.5px 1.5px 2px grey',
     minHeight: '40px',
     width: '100px',
     borderRadius: '4px',
@@ -111,6 +121,7 @@ export const AddButton = styled("button")({
 
 export const ClearButton = styled("button")({
     backgroundColor: '#DCDCDC',
+    boxShadow: '0.5px 0.5px 1px grey',
     minHeight: '40px',
     width: '100px',
     borderRadius: '4px',
@@ -232,6 +243,7 @@ export const CustomModalFooter = styled("div")({
 
 export const RegisterNewUserButton = styled("button")({
     backgroundColor: '#003C73',
+    boxShadow: '1.5px 1.5px 2px grey',
     minHeight: '40px',
     width: '100px',
     borderRadius: '4px',

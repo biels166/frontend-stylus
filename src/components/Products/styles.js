@@ -92,6 +92,7 @@ export const CustomHeader = styled("div")({
 
 export const AddButton = styled("button")({
     backgroundColor: '#003C73',
+    boxShadow: '1.5px 1.5px 2px grey',
     minHeight: '40px',
     width: 'auto',
     borderRadius: '4px',
@@ -116,6 +117,7 @@ export const AddButton = styled("button")({
 
 export const CancelButton = styled("button")({
     backgroundColor: '#ff0000',
+    boxShadow: '1.5px 1.5px 2px grey',
     minHeight: '40px',
     width: 'auto',
     borderRadius: '4px',
@@ -139,6 +141,7 @@ export const CancelButton = styled("button")({
 
 export const ClearButton = styled("button")({
     backgroundColor: '#DCDCDC',
+    boxShadow: '0.5px 0.5px 1px grey',
     minHeight: '40px',
     width: '100px',
     borderRadius: '4px',
@@ -260,6 +263,7 @@ export const CustomModalFooter = styled("div")({
 
 export const RegisterNewUserButton = styled("button")({
     backgroundColor: '#003C73',
+    boxShadow: '1.5px 1.5px 2px grey',
     minHeight: '40px',
     width: '100px',
     borderRadius: '4px',

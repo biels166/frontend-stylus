@@ -42,7 +42,7 @@ export const ProductsAndServices = () => {
     const [productValue, setProductValue] = useState('')
     const [obs, setObs] = useState('')
     const [productList, setProductList] = useState([])
-    const [initialData, setInitialData] = useState({})
+    const [initialData, setInitialData] = useState({ rows: [], columns: [] });
 
     const handleReloadPage = (reload) => {
         if (reload) {
@@ -102,7 +102,6 @@ export const ProductsAndServices = () => {
                             { field: 'obs', headerName: 'OBSERVAÇÕES' },
                         ]
                     }
-                    console.log('aux', aux)
                     setInitialData(aux)
                 }
             ).catch(erro => {
@@ -144,7 +143,6 @@ export const ProductsAndServices = () => {
                             { field: 'obs', headerName: 'OBSERVAÇÕES' },
                         ]
                     }
-                    console.log('aux', aux)
                     setInitialData(aux)
                 }
             ).catch(erro => {
@@ -239,8 +237,8 @@ export const ProductsAndServices = () => {
                         <ListSkeleton /> :
                         <>
                             {
-                                totalItens > 0 ?
-                                    <Box 
+    totalItens > 0 && initialData.rows?.length > 0 && initialData.columns?.length > 0 ? (
+        <Box 
                                     justifyContent={'center'} 
                                     display={'flex'} 
                                     marginTop={'10 px'}>
@@ -249,7 +247,7 @@ export const ProductsAndServices = () => {
                                         handleReloadPage={handleReloadPage}
                                         />
                                     </Box>
-
+    )
                                     : <CustomResponse>
                                         <Typography>
                                             Produto não encontrado. Verifique o nome informado e tente novamente

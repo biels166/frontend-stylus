@@ -5,6 +5,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import ListIcon from '@mui/icons-material/List';
+import { Box } from "@mui/material";
 
 export const CustonClientIcon = styled(HandshakeIcon)({
     color: '#2775A2'
@@ -29,3 +30,15 @@ export const CustumQuoteIcon = styled(QueryStatsIcon)({
 export const CustumMaterialsIcon = styled(ListIcon)({
     color: '#2775A2'
 })
+
+export const CustomPaper = styled(Box)({
+    height: '100%',
+    Width: '100%',
+    display: "flex",
+    flexDirection: 'column',
+    padding: '5px 20px',
+    margin: '0px 0px 10px',
+    backgroundColor: '#E8EAED',
+    borderBottomRadius: '80px',
+
+});

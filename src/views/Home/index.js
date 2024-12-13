@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles';
 import SVG from 'react-inlinesvg'
 import Box from '@mui/material/Box';
@@ -14,13 +14,11 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import { UserList } from '../../components/Users/List';
-import { ClientList } from '../../components/Clientes/List';
 import logoStylus from '../../assets/logoStylus_White.svg'
 import collapseIcon from '../../assets/collapseIcon.svg'
-import { CustonClientIcon, CustonOSIcon, CustonProductIcon, CustonUserIcon, CustumMaterialsIcon, CustumQuoteIcon } from './styles';
-import { ProductsAndServices } from '../../components/Products';
-import { MaterialList } from '../../components/Materials/List';
+import AccountMenu from '../../components/AccountMenu';
+import { NavItems } from './../../components/Menu/Nav/Nav';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -104,17 +102,29 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 );
 
-export const MiniDrawer = () => {
+export const Menu = () => {
   const [open, setOpen] = useState(false);
   const [component, setComponent] = useState(0)
+  const [menuItens, setMenuItens] = useState(NavItems())
+  const navigate = useNavigate()
+  const location = useLocation()
+  const handleDrawerOpen = () => { setOpen(true) }
+  const handleDrawerClose = () => { setOpen(false) }
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  useEffect(() => {
+    const currntPath = location.pathname
+    const splitedPath = location.pathname.split('/').filter(p => p !== '')
+    const isParent = splitedPath.length === 1
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+    //TRATATIVA PARA EVOITAR QUEBRA, JÁ PENSEI NUMA OUTRA FORMA DE RESOLVER. MAS PRECISO TESTAR O REDIRECIONAMENTO PRIMEIRO
+
+    if (isParent)
+      setComponent(menuItens.filter(page => page.path === currntPath)[0].index)
+    else {
+      const pathBase = `/${splitedPath[0]}`
+      setComponent(menuItens.filter(page => page.path === pathBase)[0].index)
+    }
+  }, [menuItens])
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -133,7 +143,19 @@ export const MiniDrawer = () => {
           >
             <MenuIcon />
           </IconButton>
-          <SVG src={logoStylus} />
+          <SVG
+            src={logoStylus}
+            onClick={() => {
+              setComponent(0)
+            }} />
+          <Box
+            marginLeft={'auto'}
+            display={'flex'}
+            flexDirection={'row'}
+            gap={'10px'}
+          >
+            <AccountMenu />
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -147,73 +169,66 @@ export const MiniDrawer = () => {
 
         <List>
           {
-            ['Usuários',
-              'Clientes',
-              'Produtos e Serviços',
-              'Materiais',
-              'Cotações',
-              'Ordens de Serviço'
-            ].map((text, index) => (
-
-              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  onClick={() => { setComponent(index) }}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                    backgroundColor: index === component ? '#E0FFFF' : '#FFFFFF'
-                  }}
-                >
-                  <ListItemIcon
+            menuItens.map(item => (
+              item.show && (
+                <ListItem key={item.name} disablePadding sx={{ display: 'block' }}>
+                  <Divider
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                      borderColor: item.enable ? '#2775A2' : '#A9A9A9',
+                      borderWidth: item.index === 1 ? '1px' : '0.5px',
+                      borderStyle: 'groove'
+                    }} />
+                  <ListItemButton
+                    onClick={() => {
+                      if (item.enable) {
+                        navigate(`${item.path}`)
+                        setComponent(item.index)
+                      }
+                    }}
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
+                      backgroundColor: item.enable ? item.index === component ? '#E0FFFF' : '#FFFFFF' : '#FFFFFF',
+                      '&:hover': {
+                        backgroundColor: item.enable ? '#E0FFFF' : '#FFFFFF',
+                        cursor: item.enable ? 'pointer' : 'not-allowed',
+                      }
                     }}
                   >
-                    {index === 0 && (<CustonUserIcon titleAccess='Usuários' />)}
-                    {index === 1 && (<CustonClientIcon titleAccess='Clientes' />)}
-                    {index === 2 && (<CustonProductIcon titleAccess='Produtos e Serviços' />)}
-                    {index === 3 && (<CustumMaterialsIcon titleAccess='Materiais' />)}
-                    {index === 4 && (<CustumQuoteIcon titleAccess='Cotações' />)}
-                    {index === 5 && (<CustonOSIcon titleAccess='Ordens de Serviço' />)}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0, color: '#2775A2' }} />
-                </ListItemButton>
-                <Divider sx={{ borderColor: '#2775A2', borderWidth: '2px', borderStyle: 'groove' }} />
-              </ListItem>
-            ))}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <item.icon enable={item.enable} titleAccess={item.name} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.name}
+                      sx={{
+                        opacity: open ? 1 : 0,
+                        color: item.enable ? '#2775A2' : '#A9A9A9',
+                      }}
+                    />
+                  </ListItemButton>
+                  <Divider sx={{
+                    borderColor: item.enable ? '#2775A2' : '#A9A9A9',
+                    borderWidth: item.index === menuItens.length ? '1px' : '0.5px',
+                    borderStyle: 'groove'
+                  }} />
+                </ListItem>
+              )
+            ))
+          }
         </List>
 
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeaderPaper />
-        {component === 0 && (
-          <UserList />
-        )}
-
-        {component === 1 && (
-          <ClientList />
-        )}
-
-        {component === 2 && (
-          <ProductsAndServices />
-        )}
-
-        {component === 3 && (
-          <MaterialList />
-        )}
-
-        {component === 4 && (
-          <h1>Cotações</h1>
-        )}
-
-        {component === 5 && (
-          <h1>Ordens de Serviço</h1>
-        )}
-
+        <Outlet />
       </Box>
-    </Box>
+    </Box >
   );
 }
