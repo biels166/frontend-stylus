@@ -3,7 +3,6 @@ import { StylusImage, ImageContainer, TextContainer, TextImage } from './styles'
 import ImgStylus from '../../assets/logoStylus_White.svg'
 import goodBye from '../../assets/despedida-logoutText.png'
 import { useNavigate } from 'react-router-dom'
-import { useLogout } from '../../hooks/useCredentials'
 import { CustomLinearProgress } from '../../components/CustomLinearProgress';
 import { useAuth } from '../../context/AuthContext';
 

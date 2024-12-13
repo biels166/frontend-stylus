@@ -29,7 +29,8 @@ function Login() {
   const [status, setStatus] = React.useState('')
   const [message, setMessage] = React.useState('')
   const { login } = useAuth()
-  const navigate = useNavigate()
+  const navigate = useNavigate() 
+  
 
   const authLogin = async () => {
     const encryptedPassword = CryptoJS.AES.encrypt(userPassword, process.env.REACT_APP_SCRT_INTEGRATION).toString()

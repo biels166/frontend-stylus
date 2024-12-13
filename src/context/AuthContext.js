@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import api from '../services/api'
-import { jwtDecode } from 'jwt-decode';
-import { Password } from "@mui/icons-material";
 
 export const AuthContext = createContext()
 
