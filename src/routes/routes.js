@@ -46,7 +46,7 @@ export const Routering = () => {
                 <Route path='/404' element={<NotFoundPage />} />
                 <Route path='/500' element={<InternalErrorPage />} />
                 <Route path='/401' element={<UnauthorizedPage />} />
-                <Route path='*' element={<NotFoundPage />} />
+                <Route path='/*' element={<NotFoundPage />} />
             </Routes>
         </Router>
     )

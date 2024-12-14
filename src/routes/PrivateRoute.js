@@ -22,7 +22,7 @@ export const PrivateRoute = () => {
 
     React.useEffect(() => {
         console.log("provate router currente page", location)
-    },[location])
+    }, [location])
 
     if (loading)
         return <LoadingValiationPage />
@@ -30,6 +30,10 @@ export const PrivateRoute = () => {
 
     if (!isValidToken)
         return <Navigate to='/login' />
+
+
+    if (currentPath === '/')
+        return <Navigate to='/home' />
 
     if (
         !isAdm && (
@@ -42,7 +46,6 @@ export const PrivateRoute = () => {
         )
     )
         return <Navigate to='/401' />
-
 
     return (user && isValidToken) ? <Outlet /> : <Navigate to='/login' />
 }
