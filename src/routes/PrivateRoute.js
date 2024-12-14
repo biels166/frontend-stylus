@@ -20,6 +20,10 @@ export const PrivateRoute = () => {
     const location = useLocation()
     const currentPath = location.pathname
 
+    React.useEffect(() => {
+        console.log("provate router currente page", location)
+    },[location])
+
     if (loading)
         return <LoadingValiationPage />
 
