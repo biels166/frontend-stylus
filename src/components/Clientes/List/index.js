@@ -20,7 +20,7 @@ import { ModalAddClient } from '../ModalAddClient'
 import { CustomToast } from '../../Toast'
 
 export const ClientList = () => {
-    const ITENS_PER_PERGE = 3
+    const ITENS_PER_PERGE = 6
     const [openToast, setOpenToast] = useState(false)
     const [openAddModal, setOpenAddModal] = useState(false)
     const [loadingList, setLoadingList] = useState(false)

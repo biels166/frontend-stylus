@@ -30,7 +30,7 @@ export const ClientNFList = () => {
         clientId: clientId
     }
 
-    const ITENS_PER_PERGE = 5
+    const ITENS_PER_PERGE = 10
     const [loadingList, setLoadingList] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [form, setForm] = useState(defaultForm)

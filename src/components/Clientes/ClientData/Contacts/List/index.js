@@ -18,7 +18,7 @@ import { formatCellphone, formatPhone } from '../../../../../utils'
 import { useAuth } from '../../../../../context/AuthContext'
 
 export const ContactsList = () => {
-    const ITENS_PER_PERGE = 5
+    const ITENS_PER_PERGE = 10
     const { clientId } = useParams()
 
     const defaultForm = {
