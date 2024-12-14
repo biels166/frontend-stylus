@@ -44,7 +44,7 @@ function Login() {
     if (auth.success) {
       login(auth.data.token, { ...auth.data.user, password: encryptedPassword }, navigate)
 
-      setTimeout(() => { navigate('/home') }, 4000)
+      setTimeout(() => { navigate('/home') }, 2000)
     }
   }
 

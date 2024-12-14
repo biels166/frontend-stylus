@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('User', JSON.stringify(userLogin))
 
         validateToken()
-        navigate('/home')
+    //    navigate('/home')
     }
 
     const logout = (navigate) => {
@@ -143,7 +143,7 @@ export const AuthProvider = ({ children }) => {
         handleResetRoleStates()
         setUser(null)
 
-        navigate('/login')
+        //navigate('/login')
     }
 
 
