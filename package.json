@@ -2,6 +2,7 @@
   "name": "stylus",
   "version": "0.1.0",
   "private": true,
+  "main": "src/index.js",
   "engines": {
     "node": "20.x",
     "npm": "10.x"
