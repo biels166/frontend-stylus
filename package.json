@@ -2,9 +2,6 @@
   "name": "stylus",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "16.x"
-  },
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -22,6 +19,7 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.11",
     "dayjs-plugin-utc": "^0.1.2",
+    "has-unicode": "^2.0.1",
     "jwt-decode": "^4.0.0",
     "language-subtag-registry": "^0.3.23",
     "react": "^18.3.1",
