@@ -116,6 +116,9 @@ export const Menu = () => {
     const splitedPath = location.pathname.split('/').filter(p => p !== '')
     const isParent = splitedPath.length === 1
 
+    console.log("menu Itens", menuItens)
+    console.log("currente page", location)
+
     //TRATATIVA PARA EVOITAR QUEBRA, JÁ PENSEI NUMA OUTRA FORMA DE RESOLVER. MAS PRECISO TESTAR O REDIRECIONAMENTO PRIMEIRO
 
     if (isParent)
