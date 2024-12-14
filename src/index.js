@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from './reportWebVitals.js';
 import { Routering } from './routes/routes.js';
 import { AuthProvider } from './context/AuthContext.js';
 
