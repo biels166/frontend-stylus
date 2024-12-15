@@ -11,16 +11,19 @@ function LogoutUser() {
     const { logout } = useAuth()
 
     const handleLogoutRedirect = () => {
+        console.log("handleLogoutRedirect")
+
         logout(navigate)
 
         setTimeout(() => {
+            console.log("concluiu setTimeout do logout")
+
             navigate('/login')
         }, 3000)
     }
 
     return (
         <React.Fragment>
-
             <ImageContainer>
                 <StylusImage src={ImgStylus} />
             </ImageContainer>
@@ -32,8 +35,7 @@ function LogoutUser() {
             <TextContainer>
                 <TextImage src={goodBye} />
             </TextContainer>
-
-        </React.Fragment>  
+        </React.Fragment>
     )
 }
 
