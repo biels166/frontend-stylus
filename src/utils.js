@@ -42,7 +42,10 @@ export const formatDocument = (documentNumber = '') => {
 }
 
 export const formatDate = (date = new Date()) => {
-    return new Date(date).toLocaleDateString('pt-BR')
+    let dt = new Date(date)
+    dt.setHours(dt.getHours() + 3)
+
+    return dt.toLocaleDateString('pt-BR')
 }
 
 export const formatValue = (value = 0) => {
