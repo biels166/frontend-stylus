@@ -17,7 +17,7 @@ export const DateInput = ({
     selectedDate,
     disabled = false,
     disableFuture = false,
-    valueCallback = () => { },
+    valueCallback = () => Date,
 }) => {
     const [value, setValue] = React.useState(null);
 
@@ -40,9 +40,8 @@ export const DateInput = ({
                 disableFuture={disableFuture}
                 inputFormat="DD/MM/YYYY"
                 onChange={(newValue) => {
-                    console.log('Novo valor:', newValue);
                     setValue(newValue);
-                    valueCallback(newValue?.format('DD/MM/YYYY'));
+                    valueCallback(new Date(newValue));
                 }}
             />
         </LocalizationProvider>

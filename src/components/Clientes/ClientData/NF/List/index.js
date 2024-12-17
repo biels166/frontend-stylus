@@ -147,7 +147,9 @@ export const ClientNFList = () => {
                                     label='Data de Emissão*'
                                     selectedDate={form.date}
                                     disableFuture={true}
-                                    valueCallback={(newDate) => setForm({ ...form, date: newDate })}
+                                    valueCallback={(newDate) => {
+                                        setForm({ ...form, date: newDate })
+                                    }}
                                 />
 
                                 <TextField
