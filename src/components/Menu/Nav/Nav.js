@@ -16,6 +16,7 @@ import UnauthorizedPage from '../../../views/Errors/Unauthorized'
 import NotFoundPage from '../../../views/Errors/NotFound'
 import InternalErrorPage from '../../../views/Errors/InternalError'
 import { ClientDataTabs } from '../../Clientes/ClientData'
+import { TaskBoard } from '../../../views/TaskBoard'
 
 export const NavErrors = () => {
     return [
@@ -44,7 +45,7 @@ export const NavItems = () => {
             path: '/home',
             icon: CustomHomeIcon,
             roles: [],
-            element: <h1>Hello my friend</h1>,
+            element: <TaskBoard/>,
             enable: true,
             show: true
         },

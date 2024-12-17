@@ -11,9 +11,10 @@ import { TextField, Typography } from '@mui/material'
 import { CustomToast } from '../../Toast'
 import { ModalAddUser } from '../ModalAddUser'
 import { useAuth } from '../../../context/AuthContext'
+import { PageControl } from '../../PageControl'
 
 export const UserList = () => {
-    const ITENS_PER_PERGE = 3
+    const [itensPerPage, setItensPerPage] = useState(5)
     const [openToast, setOpenToast] = useState(false)
     const [openAddModal, setOpenAddModal] = useState(false)
     const [loadingList, setLoadingList] = useState(false)
@@ -21,7 +22,7 @@ export const UserList = () => {
     const [filter, setFilter] = useState('')
     const [responseUserList, setResponseUserList] = useState({})
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
-    const {isAdm, userPage} = useAuth()
+    const { isAdm, userPage } = useAuth()
 
     const handleOpenAddModal = () => { setOpenAddModal(true) }
     const handleCloseAddModal = () => { setOpenAddModal(false) }
@@ -29,20 +30,20 @@ export const UserList = () => {
     const handleReloadPage = (reload) => {
         if (reload) {
             setCurrentPage(1)
-            getUserList(1, ITENS_PER_PERGE)
+            getUserList(1, itensPerPage)
         }
     }
     const handleChangePage = (event, value) => {
         setCurrentPage(value)
 
         if (filter === '')
-            getUserList(value, ITENS_PER_PERGE)
+            getUserList(value, itensPerPage)
         else
-            getUserListByName(filter, value, ITENS_PER_PERGE)
+            getUserListByName(filter, value, itensPerPage)
 
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
- 
+
     async function getUserList(pageNumber, rowsPage) {
         setLoadingList(true)
 
@@ -97,7 +98,7 @@ export const UserList = () => {
     }
 
     useEffect(() => {
-        getUserList(currentPage, ITENS_PER_PERGE)
+        getUserList(currentPage, itensPerPage)
     }, [])
 
     return (
@@ -123,14 +124,14 @@ export const UserList = () => {
                         <IconButtons src={searchIcon}
                             onClick={() => {
                                 setCurrentPage(1)
-                                getUserListByName(filter, 1, ITENS_PER_PERGE)
+                                getUserListByName(filter, 1, itensPerPage)
                             }}
                         />
                         <ClearButton
                             onClick={() => {
                                 setFilter('')
                                 setCurrentPage(1)
-                                getUserList(1, ITENS_PER_PERGE)
+                                getUserList(1, itensPerPage)
                             }
                             }>
                             Limpar
@@ -153,6 +154,19 @@ export const UserList = () => {
                             {
                                 (responseUserList && responseUserList.totalUsers > 0) ?
                                     <React.Fragment>
+                                        <PageControl
+                                            itens={responseUserList?.userList?.length}
+                                            total={responseUserList?.totalUsers}
+                                            cacheItensPerPage={itensPerPage}
+                                            handleOnChange={(newValue) => setItensPerPage(newValue)}
+                                            handleOnClick={() => {
+                                                setCurrentPage(1)
+
+                                                filter === '' ? getUserList(1, itensPerPage) : getUserListByName(filter, 1, itensPerPage)
+                                            }}
+                                        />
+
+
                                         {responseUserList?.userList?.map(user => (
                                             <UserCard
                                                 user={user}

@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { Box, Button, Pagination, Paper } from '@mui/material'
+import { Box, Pagination, Paper } from '@mui/material'
 import SVG from 'react-inlinesvg'
-
 
 export const CustomPaper = styled(Box)({
     height: '100%',
@@ -10,7 +9,7 @@ export const CustomPaper = styled(Box)({
     flexDirection: 'column',
     padding: '5px 20px',
     margin: '0px 0px 10px',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E8EAED',
     borderBottomRadius: '80px',
 });
 
@@ -85,10 +84,10 @@ export const CustomHeader = styled("div")({
             '&.Mui-focused fieldset': {
                 borderColor: '#003C73',
             },
-        },
-
+        }
     }
 });
+
 
 export const AddButton = styled("button")({
     backgroundColor: '#003C73',
@@ -170,23 +169,23 @@ export const CustomPaginator = styled(Pagination)({
 })
 
 export const CustomModalPaper = styled(Paper)({
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        minWidth: 'auto',
-        height: 'auto',
-        marginTop: '10px',
-        backgroundColor: '#FFFFFF',
-        border: '2px solid #003C73',
-        boxShadow: '24',
-        padding: '16px',
-        '& .MuiTypography-root': {
-            color: '#003C73',
-            fontWeight: 'bolder',
-            fontFamily: 'sans-serif',
-            fontSize: '20px',
-        }
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    minWidth: 'auto',
+    height: 'auto',
+    marginTop: '10px',
+    backgroundColor: '#FFFFFF',
+    border: '2px solid #003C73',
+    boxShadow: '24',
+    padding: '16px',
+    '& .MuiTypography-root': {
+        color: '#003C73',
+        fontWeight: 'bolder',
+        fontFamily: 'sans-serif',
+        fontSize: '20px',
+    }
 })
 
 export const CustomModalHeader = styled("div")({

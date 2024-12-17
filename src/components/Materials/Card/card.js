@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState, useCallback, useEffect } from 'react'
-import { CancelButton, CloseIcon, Container, CustomModalBody, CustomModalFooter, CustomModalHeader, CustomModalPaper, IconButtons, IconDiv, NFSButton, SaveButton, ShowMore } from './styles'
+import { CancelButton, CloseIcon, Container, CustomModalBody, CustomModalFooter, CustomModalHeader, CustomModalPaper, IconButtons, IconDiv, SaveButton, ShowMore } from './styles'
 import { Alert, Autocomplete, Box, Grid, MenuItem, Modal, Snackbar, TextField, Typography } from '@mui/material'
 import editIcon from '../../../assets/edit_icon.svg'
 import deleteIcon from '../../../assets/delete_icon.svg'
@@ -8,7 +8,6 @@ import nfseIcon from '../../../assets/NFSe_Icon_Logo.svg'
 import api from '../../../services/api'
 import { UFS, UFs } from '../../../constants/UFS'
 import { CITIES_BY_STATE } from '../../../constants/CITIES_BY_STATE'
-import { NFList } from '../NF/List'
 
 
 export const MaterialCard = ({
@@ -180,30 +179,6 @@ export const MaterialCard = ({
           </CustomModalPaper>
         </Modal>
       </div >
-
-      <div>
-        <Modal
-          open={openNFModel}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <CustomModalPaper>
-            <CustomModalHeader>
-              <Typography>
-                NFs do Cliente
-              </Typography>
-              <CloseIcon src={closeIcon}
-                onClick={handleCloseNFModal}
-              />
-            </CustomModalHeader>
-
-            <CustomModalBody>
-              <NFList clientId={materialObjt._id} />
-            </CustomModalBody>
-          </CustomModalPaper>
-        </Modal>
-      </div >
-
 
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

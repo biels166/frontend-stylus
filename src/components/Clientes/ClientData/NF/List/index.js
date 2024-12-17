@@ -16,6 +16,7 @@ import { CustomToast } from '../../../../Toast'
 import api from '../../../../../services/api'
 import { useAuth } from '../../../../../context/AuthContext'
 import { DateInput } from '../../../../DateInput'
+import { PageControl } from '../../../../PageControl'
 
 
 export const ClientNFList = () => {
@@ -31,6 +32,7 @@ export const ClientNFList = () => {
     }
 
     const ITENS_PER_PERGE = 10
+    const [itensPerPage, setItensPerPage] = useState(5)
     const [loadingList, setLoadingList] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [form, setForm] = useState(defaultForm)
@@ -170,7 +172,7 @@ export const ClientNFList = () => {
                                 />
 
                                 <ClearButton
-                                    onClick={() => {setForm(defaultForm)}}>
+                                    onClick={() => { setForm(defaultForm) }}>
                                     Limpar
                                 </ClearButton>
 
@@ -191,7 +193,18 @@ export const ClientNFList = () => {
                         <React.Fragment>
                             {
                                 responseNFList.totalNfs > 0 ?
-                                    <>
+                                    <React.Fragment>
+                                        <PageControl
+                                            itens={responseNFList?.nfList?.length}
+                                            total={responseNFList?.totalNfs}
+                                            cacheItensPerPage={itensPerPage}
+                                            handleOnChange={(newValue) => setItensPerPage(newValue)}
+                                            handleOnClick={() => {
+                                                setCurrentPage(1)
+                                                paginatedNFListByClient(clientId, 1, itensPerPage)
+                                            }}
+                                        />
+
                                         {responseNFList.nfList.map(item => (
                                             <NFCard
                                                 NFe={item}
@@ -211,7 +224,7 @@ export const ClientNFList = () => {
                                                 showLastButton
                                                 onChange={handleChangePage} />
                                         )}
-                                    </>
+                                    </React.Fragment>
                                     : <CustomResponse>
                                         <Typography>
                                             Não há NFSEs emitidas para este cliente.

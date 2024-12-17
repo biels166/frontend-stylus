@@ -22,6 +22,7 @@
     "has-flag": "^5.0.1",
     "has-unicode": "^2.0.1",
     "hoopy": "^0.1.4",
+    "ipaddr.js": "^2.2.0",
     "jwt-decode": "^4.0.0",
     "language-subtag-registry": "^0.3.23",
     "react": "^18.3.1",
@@ -55,5 +56,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^5.2.0"
   }
 }

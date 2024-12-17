@@ -18,9 +18,10 @@ import { TextField, Typography } from '@mui/material'
 import { useAuth } from '../../../context/AuthContext'
 import { ModalAddClient } from '../ModalAddClient'
 import { CustomToast } from '../../Toast'
+import { PageControl } from '../../PageControl'
 
 export const ClientList = () => {
-    const ITENS_PER_PERGE = 6
+    const [itensPerPage, setItensPerPage] = useState(5)
     const [openToast, setOpenToast] = useState(false)
     const [openAddModal, setOpenAddModal] = useState(false)
     const [loadingList, setLoadingList] = useState(false)
@@ -36,16 +37,16 @@ export const ClientList = () => {
     const handleReloadPage = (reload) => {
         if (reload) {
             setCurrentPage(1)
-            getClientList(1, ITENS_PER_PERGE)
+            getClientList(1, itensPerPage)
         }
     }
     const handleChangePage = (event, value) => {
         setCurrentPage(value)
 
         if (filter === '')
-            getClientList(value, ITENS_PER_PERGE)
+            getClientList(value, itensPerPage)
         else
-            getClientListByName(filter, value, ITENS_PER_PERGE)
+            getClientListByName(filter, value, itensPerPage)
 
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
@@ -103,7 +104,7 @@ export const ClientList = () => {
     }
 
     useEffect(() => {
-        getClientList(currentPage, ITENS_PER_PERGE)
+        getClientList(currentPage, itensPerPage)
     }, [])
 
     return (
@@ -129,14 +130,14 @@ export const ClientList = () => {
                         <IconButtons src={searchIcon}
                             onClick={() => {
                                 setCurrentPage(1)
-                                getClientListByName(filter, 1, ITENS_PER_PERGE)
+                                getClientListByName(filter, 1, itensPerPage)
                             }}
                         />
                         <ClearButton
                             onClick={() => {
                                 setFilter('')
                                 setCurrentPage(1)
-                                getClientList(1, ITENS_PER_PERGE)
+                                getClientList(1, itensPerPage)
                             }
                             }>
                             Limpar
@@ -160,6 +161,18 @@ export const ClientList = () => {
                                 (responseClientList && responseClientList.totalClients > 0) ?
                                     (
                                         <React.Fragment>
+                                            <PageControl
+                                                itens={responseClientList?.clientList?.length}
+                                                total={responseClientList?.totalClients}
+                                                cacheItensPerPage={itensPerPage}
+                                                handleOnChange={(newValue) => setItensPerPage(newValue)}
+                                                handleOnClick={() => {
+                                                    setCurrentPage(1)
+
+                                                    filter === '' ? getClientList(1, itensPerPage) : getClientListByName(filter, 1, itensPerPage)
+                                                }}
+                                            />
+
                                             {responseClientList.clientList.map(client => (
                                                 <ClientCard
                                                     client={client}
@@ -170,6 +183,9 @@ export const ClientList = () => {
                                             }
 
                                             {responseClientList.totalPages > 1 && (
+
+
+
                                                 <CustomPaginator
                                                     boundaryCount={0}
                                                     count={responseClientList.totalPages}

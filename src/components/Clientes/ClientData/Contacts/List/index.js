@@ -16,9 +16,9 @@ import { CustomToast } from '../../../../Toast'
 import api from '../../../../../services/api'
 import { formatCellphone, formatPhone } from '../../../../../utils'
 import { useAuth } from '../../../../../context/AuthContext'
+import { PageControl } from '../../../../PageControl'
 
 export const ContactsList = () => {
-    const ITENS_PER_PERGE = 10
     const { clientId } = useParams()
 
     const defaultForm = {
@@ -30,6 +30,7 @@ export const ContactsList = () => {
         clientId: clientId
     }
 
+    const [itensPerPage, setItensPerPage] = useState(5)
     const [loadingList, setLoadingList] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [form, setForm] = useState(defaultForm)
@@ -43,12 +44,12 @@ export const ContactsList = () => {
     const handleReloadPage = (reload, sequenceRequest = false) => {
         if (reload) {
             setForm(defaultForm)
-            paginatedContactListByClient(clientId, 1, ITENS_PER_PERGE, sequenceRequest)
+            paginatedContactListByClient(clientId, 1, itensPerPage, sequenceRequest)
         }
     }
     const handleChangePage = (event, value) => {
         setCurrentPage(value)
-        paginatedContactListByClient(clientId, value, ITENS_PER_PERGE)
+        paginatedContactListByClient(clientId, value, itensPerPage)
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
@@ -98,7 +99,7 @@ export const ContactsList = () => {
     }
 
     useEffect(() => {
-        paginatedContactListByClient(clientId, 1, ITENS_PER_PERGE)
+        paginatedContactListByClient(clientId, 1, itensPerPage)
     }, [])
 
     return (
@@ -190,7 +191,18 @@ export const ContactsList = () => {
                         <React.Fragment>
                             {
                                 responseContactList.totalContacts > 0 ?
-                                    <>
+                                    <React.Fragment>
+                                        <PageControl
+                                            itens={responseContactList?.contactList?.length}
+                                            total={responseContactList?.totalContacts}
+                                            cacheItensPerPage={itensPerPage}
+                                            handleOnChange={(newValue) => setItensPerPage(newValue)}
+                                            handleOnClick={() => {
+                                                setCurrentPage(1)
+                                                paginatedContactListByClient(clientId, 1, itensPerPage)
+                                            }}
+                                        />
+
                                         {responseContactList.contactList.map(item => (
                                             <ContactCard
                                                 contact={item}
@@ -210,7 +222,7 @@ export const ContactsList = () => {
                                                 showLastButton
                                                 onChange={handleChangePage} />
                                         )}
-                                    </>
+                                    </React.Fragment>
                                     : <CustomResponse>
                                         <Typography>
                                             Não há Contatos para este cliente.
