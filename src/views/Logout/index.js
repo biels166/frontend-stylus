@@ -11,13 +11,8 @@ function LogoutUser() {
     const { logout } = useAuth()
 
     const handleLogoutRedirect = () => {
-        console.log("handleLogoutRedirect")
-
-        logout(navigate)
-
         setTimeout(() => {
-            console.log("concluiu setTimeout do logout")
-
+            logout(navigate)
             navigate('/login')
         }, 3000)
     }
