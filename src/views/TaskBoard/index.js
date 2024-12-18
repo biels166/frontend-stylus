@@ -249,7 +249,7 @@ export const TaskBoard = () => {
                         <ListSkeleton /> :
                         <React.Fragment>
                             {
-                                responseTaskList.totalTasks > 0 ?
+                                responseTaskList.taskList.length > 0 ?
                                     <React.Fragment>
                                         <PageControl
                                             itens={responseTaskList?.taskList?.length}
