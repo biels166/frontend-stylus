@@ -15,10 +15,26 @@ const GreenSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const label = { inputProps: { 'aria-label': 'Color switch demo' } };
+const label = { inputProps: { 'aria-label': 'Color switch' } };
 
-export default function CustomSwitch() {
+export const CustomSwitch = ({
+  initialState = false,
+  reload = false,
+  handleOnChange = () => Boolean 
+}) => {
+  const [value, setValue] = React.useState(initialState)
+
+  React.useEffect(() => {
+      setValue(initialState)
+  }, [reload])
+
   return (
-      <GreenSwitch {...label}  />
+    <GreenSwitch {...label}
+      checked={value}
+      onClick={(e) => {
+        console.log(e.target.checked)
+        setValue(e.target.checked)
+        handleOnChange(e.target.checked)
+      }} />
   )
 }

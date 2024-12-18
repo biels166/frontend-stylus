@@ -121,7 +121,8 @@ export const UserList = () => {
                             onChange={(e) => { setFilter(e.target.value) }}
                         />
 
-                        <IconButtons src={searchIcon}
+                        <IconButtons
+                            src={searchIcon}
                             onClick={() => {
                                 setCurrentPage(1)
                                 getUserListByName(filter, 1, itensPerPage)

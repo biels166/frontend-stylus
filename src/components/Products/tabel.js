@@ -44,25 +44,25 @@ export default function ProductTable({ initialData, handleReloadPage }) {
       {
         field: 'product',
         headerName: 'PRODUTO',
-        width: 500,
+        width: 460,
         editable: true,
       },
       {
         field: 'value',
         headerName: 'VALOR (R$)',
-        width: 200,
+        width: 120,
         editable: true,
       },
       {
         field: 'obs',
         headerName: 'OBSERVAÇÕES',
-        width: 600,
+        width: 500,
         editable: true,
       },
       {
         field: 'actions',
         type: 'actions',
-        width: 200,
+        width: 120,
         getActions: ({ id, row }) => {
           return [
             <GridActionsCellItem
@@ -236,7 +236,7 @@ export default function ProductTable({ initialData, handleReloadPage }) {
 
   return (
     <>
-      <div style={{ width: '1501px' }}>
+      <div style={{ width: '1201px' }}>
         <div style={{ marginBottom: 8, display: 'flex', justifyContent: 'end' }}>
           <CancelButton
             disabled={!hasUnsavedRows || isSaving}

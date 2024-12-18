@@ -17,7 +17,9 @@ export const DateInput = ({
     selectedDate,
     disabled = false,
     disableFuture = false,
+    disablePast = false,
     valueCallback = () => Date,
+    variant = 'outlined'
 }) => {
     const [value, setValue] = React.useState(null);
 
@@ -38,10 +40,14 @@ export const DateInput = ({
                 value={value}
                 disabled={disabled}
                 disableFuture={disableFuture}
+                disablePast={disablePast}
                 inputFormat="DD/MM/YYYY"
                 onChange={(newValue) => {
-                    setValue(newValue);
-                    valueCallback(new Date(newValue));
+                    setValue(newValue)
+                    valueCallback(new Date(newValue))
+                }}
+                slotProps={{
+                    textField: {variant: variant}
                 }}
             />
         </LocalizationProvider>

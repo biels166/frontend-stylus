@@ -239,7 +239,6 @@ export const ProductsAndServices = () => {
                             {
     totalItens > 0 && initialData.rows?.length > 0 && initialData.columns?.length > 0 ? (
         <Box 
-                                    justifyContent={'center'} 
                                     display={'flex'} 
                                     marginTop={'10 px'}>
                                         <ProductTabel 

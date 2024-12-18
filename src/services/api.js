@@ -524,4 +524,103 @@ api.DeleteNF = async (id) => {
 }
 //#endregion
 
+//#region TaskController
+api.PaginatedTaskByUser = async (filter, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
+
+    return await api.post('/task/list', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                tasks: response.data.tasks
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                tasks: []
+            }
+        })
+}
+
+api.CreateTaskByUser = async (task) => {
+    ConfigureHeader()
+
+    const body = { ...task }
+    return await api.post('/task', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                task: response.data.task
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                task: null
+            }
+        })
+}
+
+api.UpdateTask = async (task) => {
+    ConfigureHeader()
+
+    const body = { ...task}
+    return await api.put(`/task/${task._id}`, body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                task: response.data.task
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                task: null
+            }
+        })
+}
+
+api.DeleteTask = async (id) => {
+    ConfigureHeader()
+
+    return await api.delete(`/task/${id}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.message
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+            }
+        })
+}
+//#endregion
 export default api 

@@ -9,7 +9,7 @@ import {
 } from './styles'
 import { ListSkeleton } from './skeleton'
 import { NFCard } from '../Card/card'
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, InputAdornment, TextField, Typography } from '@mui/material'
 import { SaveButton } from '../Card/styles'
 import { useParams } from 'react-router-dom'
 import { CustomToast } from '../../../../Toast'

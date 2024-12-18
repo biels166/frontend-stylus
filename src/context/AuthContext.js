@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
             const roles = dynLocalUser.roles.filter(r => r.value)
 
             setStylusToken(token)
-            
+           
             setUser(dynLocalUser)
 
             setIsAdm(dynLocalUser.admnistrator)
@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('User', JSON.stringify(userLogin))
 
         validateToken()
-    //    navigate('/home')
+        //    navigate('/home')
     }
 
     const logout = (navigate) => {
@@ -157,24 +157,22 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider
-            value={
-                { 
-                    stylusToken, 
-                    isValidToken, 
-                    user, 
-                    isAdm, 
-                    userPage, 
-                    clientPage, 
-                    productPage, 
-                    materialPage, 
-                    quotePage,
-                    orderPage,
-                    allRoles,
-                    login, 
-                    logout, 
-                    loading
-                }
-            }>
+            value={{
+                stylusToken,
+                isValidToken,
+                user,
+                isAdm,
+                userPage,
+                clientPage,
+                productPage,
+                materialPage,
+                quotePage,
+                orderPage,
+                allRoles,
+                login,
+                logout,
+                loading
+            }}>
             {children}
         </AuthContext.Provider>
     )
