@@ -26,20 +26,25 @@ function Login() {
   const [userPassword, setUserPassword] = React.useState('')
   const [blockView, setBlockView] = React.useState(true)
   const [openToast, setOpenToast] = React.useState(false)
+  const [disableButton, setDisableButton] = React.useState(false)
   const [status, setStatus] = React.useState('')
   const [message, setMessage] = React.useState('')
   const { login } = useAuth()
-  const navigate = useNavigate() 
-  
+  const navigate = useNavigate()
+
 
   const authLogin = async () => {
+    setDisableButton(true)
+
     const encryptedPassword = CryptoJS.AES.encrypt(userPassword, process.env.REACT_APP_SCRT_INTEGRATION).toString()
 
     const auth = await api.AuthUserLogin(userLogin, encryptedPassword)
-    
+
     setOpenToast(true)
     setStatus(auth.status)
     setMessage(auth.message)
+
+    setDisableButton(false)
 
     if (auth.success) {
       login(auth.data.token, { ...auth.data.user, password: encryptedPassword }, navigate)
@@ -101,6 +106,7 @@ function Login() {
 
           <ContainerLoginButtons>
             <LoginButton
+              disabled={disableButton}
               variant="contained"
               size="medium"
               type='submit'
@@ -113,6 +119,7 @@ function Login() {
             </LoginButton>
 
             <ForgotPasswordButton
+              disabled={disableButton}
               variant="contained"
               size="medium"
               onClick={(e) => {

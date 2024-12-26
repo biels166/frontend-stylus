@@ -46,6 +46,16 @@ export const LoginButton = styled("button")({
         backgroundColor: '#005F89',
         boxShadow: '2px 2px 5px grey',
         WebkitTextFillColor: '#DCDCDC'
+    },
+    '&:hover:not(:disabled)': {
+        backgroundColor: '#005F89',
+        boxShadow: '2px 2px 5px grey',
+        WebkitTextFillColor: '#DCDCDC'
+    },
+    '&:disabled': {
+        backgroundColor: '#DCDCDC',
+        WebkitTextFillColor: '#FFFFFF',
+        cursor: 'not-allowed'
     }
 })
 
@@ -64,6 +74,16 @@ export const ForgotPasswordButton = styled("button")({
         backgroundColor: '#FFFFFF',
         boxShadow: '2px 2px 5px grey',
         WebkitTextFillColor: '#005F89'
+    },
+    '&:hover:not(:disabled)': {
+        backgroundColor: '#DCDCDC',
+        boxShadow: '2px 2px 5px grey',
+        WebkitTextFillColor: '#FFFFFF'
+    },
+    '&:disabled': {
+        backgroundColor: '#DCDCDC',
+        WebkitTextFillColor: '#FFFFFF',
+        cursor: 'not-allowed'
     }
 })
 
