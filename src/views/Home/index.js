@@ -20,7 +20,7 @@ import AccountMenu from '../../components/AccountMenu';
 import { NavItems } from './../../components/Menu/Nav/Nav';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,

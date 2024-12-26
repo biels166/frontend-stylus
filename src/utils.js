@@ -4,6 +4,10 @@ export const docType = (documentInput = '') => {
     return docLength === 14 ? 'CNPJ' : 'CPF'
 }
 
+export const getOnlyNumber = (input = '') => {
+    return input === '' ? '' :  input?.replace(/\D/g, '')
+}
+
 export const formatCellphone = (cellphone = '') => {
     let onlyNumber = cellphone.replace(/\D/g, '')
 

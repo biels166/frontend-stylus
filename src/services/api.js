@@ -167,6 +167,106 @@ api.DeleteUser = async (userID) => {
 }
 //#endregion
 
+//#region TaskController
+api.PaginatedTaskByUser = async (filter, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
+
+    return await api.post('/task/list', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                tasks: response.data.tasks
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                tasks: []
+            }
+        })
+}
+
+api.CreateTaskByUser = async (task) => {
+    ConfigureHeader()
+
+    const body = { ...task }
+    return await api.post('/task', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                task: response.data.task
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                task: null
+            }
+        })
+}
+
+api.UpdateTask = async (task) => {
+    ConfigureHeader()
+
+    const body = { ...task }
+    return await api.put(`/task/${task._id}`, body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                task: response.data.task
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                task: null
+            }
+        })
+}
+
+api.DeleteTask = async (id) => {
+    ConfigureHeader()
+
+    return await api.delete(`/task/${id}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.message
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+            }
+        })
+}
+//#endregion
+
 //#region ClientController
 api.PaginatedClientList = async (pageNumber, rowsPage) => {
     ConfigureHeader()
@@ -325,7 +425,7 @@ api.DeleteClient = async (clientId) => {
 api.PaginatedContactListByClient = async (clientId, pageNumber, rowsPage) => {
     ConfigureHeader()
 
-    const body = {clientId, pageNumber: pageNumber - 1, rowsPage }
+    const body = { clientId, pageNumber: pageNumber - 1, rowsPage }
 
     return await api.post('/client-contact/list', body)
         .then(response => {
@@ -356,7 +456,7 @@ api.PaginatedContactListByClient = async (clientId, pageNumber, rowsPage) => {
 api.CreateContact = async (contactData) => {
     ConfigureHeader()
 
-    const body = { ...contactData}
+    const body = { ...contactData }
     return await api.post('/client-contact', body)
         .then(response => {
             return {
@@ -380,7 +480,7 @@ api.CreateContact = async (contactData) => {
 api.UpdateContact = async (contactData) => {
     ConfigureHeader()
 
-    const body = { ...contactData}
+    const body = { ...contactData }
 
     return await api.put(`/client-contact/${contactData._id}`, body)
         .then(response => {
@@ -481,7 +581,7 @@ api.CreateNFByClientClient = async (NFe) => {
 api.UpdateNF = async (NFe) => {
     ConfigureHeader()
 
-    const body = { ...NFe}
+    const body = { ...NFe }
     return await api.put(`/nf/${NFe._id}`, body)
         .then(response => {
             return {
@@ -524,47 +624,18 @@ api.DeleteNF = async (id) => {
 }
 //#endregion
 
-//#region TaskController
-api.PaginatedTaskByUser = async (filter, pageNumber, rowsPage) => {
+//#region CategoryController
+api.CreateCategory = async (category) => {
     ConfigureHeader()
 
-    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
-
-    return await api.post('/task/list', body)
-        .then(response => {
-            return {
-                success: true,
-                status: 'success',
-                message: '',
-                total: response.data.total,
-                pages: response.data.pages,
-                tasks: response.data.tasks
-            }
-        })
-        .catch(error => {
-            console.error(error)
-            return {
-                success: false,
-                status: 'error',
-                message: error.response.data.error ?? error,
-                total: 0,
-                pages: 0,
-                tasks: []
-            }
-        })
-}
-
-api.CreateTaskByUser = async (task) => {
-    ConfigureHeader()
-
-    const body = { ...task }
-    return await api.post('/task', body)
+    const body = { ...category }
+    return await api.post('/category', body)
         .then(response => {
             return {
                 success: true,
                 status: 'success',
                 message: response.data.msg,
-                task: response.data.task
+                category: response.data.category
             }
         })
         .catch(error => {
@@ -573,22 +644,21 @@ api.CreateTaskByUser = async (task) => {
                 success: false,
                 status: 'error',
                 message: error.response.data.error ?? error,
-                task: null
+                category: null
             }
         })
 }
 
-api.UpdateTask = async (task) => {
+api.GetCategoryOptions = async () => {
     ConfigureHeader()
 
-    const body = { ...task}
-    return await api.put(`/task/${task._id}`, body)
+    return await api.get('/category/listCategories')
         .then(response => {
             return {
                 success: true,
                 status: 'success',
                 message: response.data.msg,
-                task: response.data.task
+                categories: response.data.options
             }
         })
         .catch(error => {
@@ -597,15 +667,63 @@ api.UpdateTask = async (task) => {
                 success: false,
                 status: 'error',
                 message: error.response.data.error ?? error,
-                task: null
+                categories: null
             }
         })
 }
 
-api.DeleteTask = async (id) => {
+api.CreateItemCategory = async (item) => {
     ConfigureHeader()
 
-    return await api.delete(`/task/${id}`)
+    const body = { ...item }
+    return await api.post('/category/item', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                item: response.data.item
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                item: null
+            }
+        })
+}
+
+api.UpdateItemCategory = async (item) => {
+    ConfigureHeader()
+
+    const body = { ...item }
+    return await api.put(`/category/item/${item._id}`, body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                item: response.data.item
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                item: null
+            }
+        })
+}
+
+api.DeleteItemCategory = async (id) => {
+    ConfigureHeader()
+
+    return await api.delete(`/category/item/${id}`)
         .then(response => {
             return {
                 success: true,
@@ -619,6 +737,178 @@ api.DeleteTask = async (id) => {
                 success: false,
                 status: 'error',
                 message: error.response.data.error ?? error,
+            }
+        })
+}
+
+api.PaginatedItensByCategory = async (filter, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
+
+    return await api.post('/category/listItemByCategory', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                itens: response.data.itens
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                itens: []
+            }
+        })
+}
+//#endregion
+
+//#region MaterialController
+api.PaginatedMaterialListByFilter = async (filter, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = { filter, pageNumber: pageNumber - 1, rowsPage }
+
+    return await api.post('/material/listByFilter', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                materials: response.data.materials
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                materials: []
+            }
+        })
+}
+
+api.CreateMaterial = async (materialData) => {
+    ConfigureHeader()
+
+    const body = { ...materialData, callFromFront: true }
+    return await api.post('/material', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                material: response.data.material
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                material: null
+            }
+        })
+}
+
+api.UpdateMaterial = async (materialData) => {
+    ConfigureHeader()
+
+    const body = { ...materialData, callFromFront: true }
+
+    return await api.put(`/material/${materialData._id}`, body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                material: response.data.material
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                material: null
+            }
+        })
+}
+
+api.DeleteMaterial = async (materialID) => {
+    ConfigureHeader()
+
+    return await api.delete(`/material/${materialID}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.message
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+            }
+        })
+}
+
+api.GetMaterialCodeOptions = async () => {
+    ConfigureHeader()
+
+    return await api.get('/material/list/codeMaterial')
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                options: response.data.options
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                options: []
+            }
+        })
+}
+
+api.GetMaterialTypeOptions = async () => {
+    ConfigureHeader()
+
+    return await api.get('/material/list/type')
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                options: response.data.options
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                options: []
             }
         })
 }

@@ -7,7 +7,7 @@ export const CounterInfo = ({itens, total}) => {
     return (
         <CounterInfoStyle>
             <Typography>
-                Exibindo {itens} de {total}
+                Exibindo {itens > total ? total : itens} de {total}
             </Typography>
         </CounterInfoStyle>
     )

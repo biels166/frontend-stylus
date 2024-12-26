@@ -5,7 +5,9 @@ import {
     CustomMaterialsIcon,
     CustomQuoteIcon,
     CustomOSIcon,
-    CustomHomeIcon
+    CustomHomeIcon,
+    PartnersIcon,
+    CustomCategoryIcon
 } from './styles'
 import { UserList } from '../../Users/List'
 import { ClientList } from '../../Clientes/List'
@@ -17,6 +19,7 @@ import NotFoundPage from '../../../views/Errors/NotFound'
 import InternalErrorPage from '../../../views/Errors/InternalError'
 import { ClientDataTabs } from '../../Clientes/ClientData'
 import { TaskBoard } from '../../../views/TaskBoard'
+import { CategoryTabs } from '../../Category'
 
 export const NavErrors = () => {
     return [
@@ -45,7 +48,7 @@ export const NavItems = () => {
             path: '/home',
             icon: CustomHomeIcon,
             roles: [],
-            element: <TaskBoard/>,
+            element: <TaskBoard />,
             enable: true,
             show: true
         },
@@ -101,13 +104,13 @@ export const NavItems = () => {
             enable: isAdm || productPage.Viewer,
             show: true
         },
-        //Materiais
+        //Categoria de Materiais
         {
             index: 4,
-            name: 'Materiais',
+            name: 'Categoria de Materiais',
             path: '/materiais',
-            icon: CustomMaterialsIcon,
-            element: <MaterialList />,
+            icon: CustomCategoryIcon,
+            element: <CategoryTabs />,
             roles: [
                 process.env.REACT_APP_ADMINISTRADOR,
                 process.env.REACT_APP_VISUALIZAR_MATERIAL
@@ -115,9 +118,37 @@ export const NavItems = () => {
             enable: isAdm || materialPage.Viewer,
             show: true
         },
-        //Cotações
+        //Insumos
         {
             index: 5,
+            name: 'Insumos',
+            path: '/insumos',
+            icon: CustomMaterialsIcon,
+            element: <MaterialList />,
+            roles: [
+                process.env.REACT_APP_ADMINISTRADOR,
+                process.env.REACT_APP_VISUALIZAR_MATERIAL
+            ],
+            enable: isAdm,
+            show: true
+        },
+        //Terceiros
+        {
+            index: 6,
+            name: 'Serviços de terceiros',
+            path: '/servicos-terceiros',
+            icon: PartnersIcon,
+            element: <MaterialList />,
+            roles: [
+                process.env.REACT_APP_ADMINISTRADOR,
+                process.env.REACT_APP_VISUALIZAR_MATERIAL
+            ],
+            enable: isAdm,
+            show: true
+        },
+        //Cotações
+        {
+            index: 7,
             name: 'Cotações',
             path: '/cotacoes',
             icon: CustomQuoteIcon,
@@ -131,7 +162,7 @@ export const NavItems = () => {
         },
         //Ordens de Serviço
         {
-            index: 6,
+            index: 8,
             name: 'Ordens de Serviço',
             path: '/ordens',
             icon: CustomOSIcon,

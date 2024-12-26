@@ -25,6 +25,11 @@ import api from '../../../services/api'
 import { Alert, Box, FormControl, InputLabel, MenuItem, Modal, Pagination, Paper, Select, Snackbar, TextField, Typography } from '@mui/material'
 import { UFS } from '../../../constants/UFS'
 import { formatCellphone, formatDocument, formatPhone } from '../../../utils'
+import { convertFieldResponseIntoMuiTextFieldProps } from '@mui/x-date-pickers/internals'
+import { useAuth } from '../../../context/AuthContext'
+import { CustomToast } from '../../Toast'
+import { PageControl } from '../../PageControl'
+import { ModalAddMaterial } from '../ModalAddMaterial'
 
 export const MaterialList = () => {
     const ITENS_PER_PERGE = 10
@@ -34,10 +39,8 @@ export const MaterialList = () => {
     const [openAddModal, setOpenAddModal] = useState(false)
     const [disableButton, setDisableButton] = useState(false)
     const [loadingList, setLoadingList] = useState(false)
-    const [currentPage, setCurrentPage] = useState(1)
     const [totalItens, setTotalItens] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
-    const [filter, setFilter] = useState('')
     const [name, setName] = useState('')
     const [document, setDocument] = useState('')
     const [email, setEmail] = useState('')
@@ -51,149 +54,68 @@ export const MaterialList = () => {
     const [state, setState] = useState('')
     const [materialList, setMaterialList] = useState([])
 
-    //Seção de filtros e pesquisas
-    const [materialName, setMaterialName] = useState('')
-    const [listOptCode, setListOptCode] = useState([])
-    const [selectedCode, setSelectedCode] = useState("")
-    const [listOptItemCode, setListOptItemCode] = useState([])
-    const [selectedItemCode, setSelectedItemCode] = useState("")
-    const [listOptType, setListOptType] = useState([])
-    const [selectedType, setSelectedType] = useState("")
 
+
+    const [itensPerPage, setItensPerPage] = useState(5)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [filter, setFilter] = useState({})
+    const [optionsType, setOptionsType] = useState([])
+    const [optionsMaterialCode, setOptionsMaterialCode] = useState([])
+    const [responseMaterialList, setResponseMaterialList] = useState({})
+    const [infoToCustomToast, setInfoToCustomToast] = useState({})
+    const { isAdm, materialPage } = useAuth()
+
+    const handleCloseAddModal = () => { setOpenAddModal(false) }
+    const handleCloseToast = () => { setOpenToast(false) }
     const handleReloadPage = (reload) => {
         if (reload) {
-            list(1)
+            paginatedMaterialListByFilter(filter, 1, itensPerPage)
         }
     }
-
     const handleChangePage = (event, value) => {
         setCurrentPage(value)
-
-        if (filter === '')
-            list(value)
-        else
-            listFiltredMaterial(filter, value)
+        paginatedMaterialListByFilter(filter, value, itensPerPage)
 
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    const handleCloseAddModal = () => {
-        setOpenAddModal(false)
-    }
-
-    const handleCloseToast = () => {
-        setOpenToast(false)
-    }
-
-
-    async function list(pageNumber) {
-        setLoadingList(true)
-        await api.get('/material')
-            .then(
-                response => {
-                    let total = response.data.length
-                    let pages = Math.ceil(total / ITENS_PER_PERGE)
-                    let skip = (pageNumber - 1) * ITENS_PER_PERGE
-                    let take = skip + ITENS_PER_PERGE
-                    let filtered = response.data.slice(skip, take)
-
-                    if (pageNumber === 1) setCurrentPage(1)
-                    setMaterialList(filtered)
-                    setTotalItens(total)
-                    setTotalPages(pages)
-                    setLoadingList(false)
-                }
-            ).catch(erro => {
-                console.log(erro)
-                setMaterialList([])
-                setTotalItens(0)
-                setTotalPages(0)
-                setLoadingList(false)
-            })
-    }
-
-    async function listFiltredMaterial(filter, pageNumber) {
+    async function paginatedMaterialListByFilter(filter, pageNumber, rowsPage) {
         setLoadingList(true)
 
-        await api.post(`/material/filter/list`,
-            {
-                materialCode: selectedCode === "" ? 0 : selectedCode,
-                itemCode: selectedItemCode === "" ? 0 : selectedItemCode,
-                type: selectedType,
-                material: materialName
-            }
-        )
-            .then(
-                response => {
-                    let total = response.data.length
-                    let pages = Math.ceil(total / ITENS_PER_PERGE)
-                    let skip = (pageNumber - 1) * ITENS_PER_PERGE
-                    let take = skip + ITENS_PER_PERGE
-                    let filtred = response.data.slice(skip, take)
-                    if (pageNumber === 1) setCurrentPage(1)
-                    setMaterialList(filtred)
-                    setTotalItens(total)
-                    setTotalPages(pages)
-                    setLoadingList(false)
-                }
-            ).catch(erro => {
-                console.log(erro)
-                setMaterialList([])
-                setTotalItens(0)
-                setTotalPages(0)
-                setLoadingList(false)
+        const response = await api.PaginatedMaterialListByFilter(filter, pageNumber, rowsPage)
+
+        if (response.success) {
+            setCurrentPage(pageNumber)
+            setResponseMaterialList({
+                totalMaterial: response.total,
+                totalPages: response.pages,
+                materialList: response.materials
             })
+        }
+        else {
+            setCurrentPage(1)
+            setResponseMaterialList({})
+        }
+
+        setInfoToCustomToast({
+            severity: response.status,
+            info: response.message,
+        })
+
+        setLoadingList(false)
+        setOpenToast(!response.success)
     }
 
-    async function getOptCodeMat() {
+    async function getOptions() {
         setLoadingList(true)
-        await api.get('/material/list/optCodeMat')
-            .then(
-                response => {
-                    setListOptCode(response.data)
-                    setSelectedCode("")
-                    setLoadingList(false)
-                }
-            ).catch(erro => {
-                console.log(erro)
-                setListOptCode([])
-                setSelectedCode("")
-                setLoadingList(false)
-            })
-    }
 
-    async function getOptItemCode() {
-        setLoadingList(true)
-        await api.get('/material/list/optItemCode')
-            .then(
-                response => {
-                    setListOptItemCode(response.data)
-                    setSelectedItemCode("")
-                    setLoadingList(false)
-                }
-            ).catch(erro => {
-                console.log(erro)
-                setListOptItemCode([])
-                setSelectedItemCode("")
-                setLoadingList(false)
-            })
-    }
+        const types = await api.GetMaterialTypeOptions()
+        setOptionsType(types.options)
 
-    async function getOptType() {
-        setLoadingList(true)
-        await api.get('/material/list/optType')
-            .then(
-                response => {
-                    setListOptType(response.data)
-                    setSelectedType("")
-                    setLoadingList(false)
-                }
-            ).catch(erro => {
-                console.log(erro)
-                setListOptType([])
-                setSelectedType("")
-                setLoadingList(false)
-            })
+        const materialCodes = await api.GetMaterialCodeOptions()
+        setOptionsMaterialCode(materialCodes.options)
+
+        setLoadingList(false)
     }
 
     async function registerClient() {
@@ -217,7 +139,7 @@ export const MaterialList = () => {
                     setRegisterStatus('success')
                     setRegisterInfo('Cliente cadastrado com sucesso')
                     setOpenToast(true)
-                    list(1)
+                    paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
                     setOpenAddModal(false)
                     setDisableButton(false)
                     setName('')
@@ -240,18 +162,19 @@ export const MaterialList = () => {
             })
     }
 
+
+
     useEffect(() => {
-        list(1)
-        getOptCodeMat()
-        getOptItemCode()
-        getOptType()
+        paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
+        getOptions()
     }, [])
 
+
     return (
-        <>
+        <React.Fragment>
             <CustomTitlePaper>
                 <Typography>
-                    Materiais
+                    Insumos
                 </Typography>
             </CustomTitlePaper>
 
@@ -262,9 +185,9 @@ export const MaterialList = () => {
                             id="outlined-required-materialNAme"
                             label="Material"
                             placeholder="digite o material"
-                            value={materialName}
+                            value={filter?.material}
                             onChange={(e) => {
-                                setMaterialName(e.target.value)
+                                setFilter({ ...filter, material: e.target.value })
                             }}
                         />
 
@@ -272,38 +195,16 @@ export const MaterialList = () => {
                             <InputLabel id="select-outlined-label-codemat">Código do Material</InputLabel>
                             <Select
                                 labelId="select-outlined-label-codemat"
-                                value={selectedCode}
-                                onChange={(evt) => {
-                                    let value = evt.target.value
-                                    setSelectedCode(value)
+                                value={filter?.materialCode}
+                                onChange={(e) => {
+                                    setFilter({ ...filter, materialCode: e.target.value })
                                 }}
                                 label="Código do Material"
                             >
                                 <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
                                 {
-                                    listOptCode.length > 0 && (
-                                        listOptCode.map(elem => (
-                                            <MenuItem value={elem}>{elem}</MenuItem>
-                                        ))
-                                    )
-                                }
-                            </Select>
-                        </FormControl>
-
-                        <FormControl variant="outlined">
-                            <InputLabel id="select-outlined-label-itemcode">Código do Item</InputLabel>
-                            <Select
-                                labelId="select-outlined-label-itemCode"
-                                value={selectedItemCode}
-                                onChange={(evt) => {
-                                    setSelectedItemCode(evt.target.value)
-                                }}
-                                label="Código do Item"
-                            >
-                                <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
-                                {
-                                    listOptItemCode.length > 0 && (
-                                        listOptItemCode.map(elem => (
+                                    optionsMaterialCode.length > 0 && (
+                                        optionsMaterialCode.map(elem => (
                                             <MenuItem value={elem}>{elem}</MenuItem>
                                         ))
                                     )
@@ -315,16 +216,16 @@ export const MaterialList = () => {
                             <InputLabel id="select-outlined-label-type">Tipo</InputLabel>
                             <Select
                                 labelId="select-outlined-label-type"
-                                value={selectedType}
-                                onChange={(evt) => {
-                                    setSelectedType(evt.target.value)
+                                value={filter?.type}
+                                onChange={(e) => {
+                                    setFilter({ ...filter, type: e.target.value })
                                 }}
                                 label="Tipo"
                             >
                                 <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
                                 {
-                                    listOptType.length > 0 && (
-                                        listOptType.map(elem => (
+                                    optionsType.length > 0 && (
+                                        optionsType.map(elem => (
                                             <MenuItem value={elem}>{elem}</MenuItem>
                                         ))
                                     )
@@ -334,20 +235,15 @@ export const MaterialList = () => {
 
                         <IconButtons src={searchIcon}
                             onClick={() => {
-
-                                listFiltredMaterial(filter, 1)
+                                paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
                             }}
                         />
 
                         <ClearButton
                             onClick={() => {
-                                setFilter('')
-                                setMaterialName('')
-                                setSelectedCode('')
-                                setSelectedItemCode('')
-                                setSelectedType('')
+                                setFilter(null)
                                 setCurrentPage(1)
-                                list(1)
+                                paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
                             }
                             }>
                             Limpar
@@ -364,11 +260,22 @@ export const MaterialList = () => {
                 {
                     loadingList ?
                         <ListSkeleton /> :
-                        <div>
+                        <React.Fragment>
                             {
-                                totalItens > 0 ?
-                                    <>
-                                        {materialList.map(item => (
+                                responseMaterialList?.totalMaterial > 0 ?
+                                    <React.Fragment>
+                                        <PageControl
+                                            itens={responseMaterialList?.materialList?.length}
+                                            total={responseMaterialList?.totalMaterial}
+                                            cacheItensPerPage={itensPerPage}
+                                            handleOnChange={(newValue) => setItensPerPage(newValue)}
+                                            handleOnClick={() => {
+                                                setCurrentPage(1)
+                                                paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
+                                            }}
+                                        />
+
+                                        {responseMaterialList?.materialList.map(item => (
                                             <MaterialCard
                                                 materialObjt={item}
                                                 key={item._id}
@@ -377,244 +284,39 @@ export const MaterialList = () => {
                                         ))
                                         }
 
-                                        {totalPages > 1 && (
+                                        {responseMaterialList?.totalPages > 1 && (
                                             <CustomPaginator
                                                 boundaryCount={0}
-                                                count={totalPages}
+                                                count={responseMaterialList?.totalPages}
                                                 page={currentPage}
                                                 size='large'
                                                 showFirstButton
                                                 showLastButton
                                                 onChange={handleChangePage} />
                                         )}
-                                    </>
+                                    </React.Fragment>
                                     : <CustomResponse>
                                         <Typography>
-                                            Material não encontrado. Verifique o filtro informado e tente novamente
+                                            Não existem insumos cadastrados ou não foi possível encontrar nenhum insumo para o iltro informado.
                                         </Typography>
                                     </CustomResponse>
                             }
-                        </div>
+                        </React.Fragment>
                 }
             </CustomPaper>
 
-            <div >
-                <Modal
-                    open={openAddModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <CustomModalPaper>
-                        <CustomModalHeader>
-                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                Cadastrar Novo Cliente
-                            </Typography>
+            <ModalAddMaterial
+                open={openAddModal}
+                handleClose={handleCloseAddModal}
+                handleReloadPage={(reload) => { handleReloadPage(reload) }}
+            />
 
-                            <CloseIcon src={closeIcon}
-                                onClick={handleCloseAddModal}
-                            />
-                        </CustomModalHeader>
-
-                        <Box>
-                            <CustomModalBody>
-                                <Box
-                                    width={'100%'}
-                                    display={'flex'}
-                                    flexDirection={'row'}
-                                >
-                                    <TextField
-                                        required
-                                        id="outlined-required-name"
-                                        label="Nome"
-                                        placeholder="digite o nome do cliente"
-                                        value={name}
-                                        onChange={(e) => {
-                                            let newName = e.target.value
-                                            setName(newName)
-                                        }}
-                                    />
-
-                                    <TextField
-                                        required
-                                        id="outlined-required-document"
-                                        label="Documento"
-                                        placeholder="digite o documento do cliente"
-                                        value={document}
-                                        onChange={(e) => {
-                                            let newDoc = formatDocument(e.target.value)
-                                            setDocument(newDoc)
-                                        }}
-                                    />
-                                </Box>
-
-                                <TextField
-                                    fullWidth
-                                    required
-                                    id="outlined-required-email"
-                                    label="E-mail"
-                                    placeholder="digite o email do cliente"
-                                    value={email}
-                                    onChange={(e) => {
-                                        let newEmail = e.target.value
-                                        setEmail(newEmail)
-                                    }}
-                                />
-
-                                <Box
-                                    width={'100%'}
-                                    display={'flex'}
-                                    flexDirection={'row'}
-                                >
-                                    <TextField
-                                        required
-                                        id="outlined-required-phone"
-                                        label="Telefone"
-                                        placeholder="digite o telefone do cliente"
-                                        value={phone}
-                                        onChange={(e) => {
-                                            let newPhone = formatPhone(e.target.value)
-                                            setPhone(newPhone)
-                                        }}
-                                    />
-
-                                    <TextField
-                                        required
-                                        id="outlined-required-cellphone"
-                                        label="Celular"
-                                        placeholder="digite o login do cliente"
-                                        value={cellPhone}
-                                        onChange={(e) => {
-                                            let newcell = formatCellphone(e.target.value)
-                                            setCellPhone(newcell)
-                                        }}
-                                    />
-                                </Box>
-
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="outlined-required-street"
-                                    label="Logradouro"
-                                    placeholder="digite o logradouro do cliente"
-                                    value={street}
-                                    onChange={(e) => {
-                                        let newStreet = e.target.value
-                                        setStreet(newStreet)
-                                    }}
-                                />
-
-                                <Box
-                                    width={'100%'}
-                                    display={'flex'}
-                                    flexDirection={'row'}
-                                >
-                                    <TextField
-                                        required
-                                        id="outlined-required-number"
-                                        label="Número"
-                                        placeholder="digite o número do logradouro do cliente"
-                                        value={number}
-                                        onChange={(e) => {
-                                            let newNum = e.target.value
-                                            setNumber(newNum)
-                                        }}
-                                    />
-
-                                    <TextField
-                                        required
-                                        id="outlined-required-complement"
-                                        label="Complemento"
-                                        placeholder="digite o compplemento do logradouro do cliente"
-                                        value={complement}
-                                        onChange={(e) => {
-                                            let newComp = e.target.value
-                                            setComplement(newComp)
-                                        }}
-                                    />
-                                </Box>
-
-                                <Box
-                                    width={'100%'}
-                                    display={'flex'}
-                                    flexDirection={'row'}
-                                >
-                                    <TextField
-                                        required
-                                        id="outlined-required-district"
-                                        label="Bairro"
-                                        placeholder="digite o bairro do logradouro do cliente"
-                                        value={district}
-                                        onChange={(e) => {
-                                            let newDistrict = e.target.value
-                                            setDistrict(newDistrict)
-                                        }}
-                                    />
-                                    <TextField
-                                        required
-                                        id="outlined-required-city"
-                                        label="Cidade"
-                                        placeholder="digite a cidade do logradouro do cliente"
-                                        value={city}
-                                        onChange={(e) => {
-                                            let newcity = e.target.value
-                                            setCity(newcity)
-                                        }}
-                                    />
-
-
-                                    <TextField
-                                        required
-                                        id="outlined-required-state"
-                                        label="Estado"
-                                        select
-                                        placeholder="selecione o estado do logradouro do cliente"
-                                        value={state}
-                                        onChange={(e) => {
-                                            let newState = e.target.value
-                                            setState(newState)
-                                        }}
-                                    >
-                                        {UFS.map((option) => (
-                                            <MenuItem key={option.value} value={option.value}>
-                                                {option.label}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
-                                </Box>
-                            </CustomModalBody>
-
-                            <CustomModalFooter>
-                                <RegisterNewUserButton
-                                    disabled={disableButton}
-                                    onClick={() => {
-                                        setDisableButton(true)
-                                        registerClient()
-                                    }}
-                                >
-                                    Salvar
-                                </RegisterNewUserButton>
-                            </CustomModalFooter>
-                        </Box>
-
-                    </CustomModalPaper>
-                </Modal>
-            </div>
-
-            <Snackbar
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            <CustomToast
                 open={openToast}
-                autoHideDuration={6000}
-                onClose={handleCloseToast}
-            >
-                <Alert
-                    onClose={handleCloseToast}
-                    severity={`${registerStatus}`}
-                    variant="filled"
-                    sx={{ width: '100%' }}
-                >
-                    {registerInfo}
-                </Alert>
-            </Snackbar>
-        </>
+                severity={infoToCustomToast.severity}
+                info={infoToCustomToast.info}
+                handleOnClose={handleCloseToast}
+            />
+        </React.Fragment>
     )
 }
