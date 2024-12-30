@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState, useCallback, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     CustomHeader,
     CustomPaper,
@@ -9,53 +9,18 @@ import {
     AddButton,
     CustomResponse,
     CustomPaginator,
-    CustomModalPaper,
-    CustomModalDiv,
-    CloseIcon,
-    CustomModalHeader,
-    CustomModalFooter,
-    RegisterNewUserButton,
-    CustomModalBody
 } from './styles'
 import searchIcon from '../../../assets/search_icon.svg'
-import closeIcon from '../../../assets/close_icon.svg'
 import { ListSkeleton } from './skeleton'
-import { ClientCard, MaterialCard } from '../Card/card'
+import { MaterialCard } from '../Card/card'
 import api from '../../../services/api'
-import { Alert, Box, FormControl, InputLabel, MenuItem, Modal, Pagination, Paper, Select, Snackbar, TextField, Typography } from '@mui/material'
-import { UFS } from '../../../constants/UFS'
-import { formatCellphone, formatDocument, formatPhone } from '../../../utils'
-import { convertFieldResponseIntoMuiTextFieldProps } from '@mui/x-date-pickers/internals'
+import { FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { useAuth } from '../../../context/AuthContext'
 import { CustomToast } from '../../Toast'
 import { PageControl } from '../../PageControl'
 import { ModalAddMaterial } from '../ModalAddMaterial'
 
 export const MaterialList = () => {
-    const ITENS_PER_PERGE = 10
-    const [openToast, setOpenToast] = useState(false)
-    const [registerStatus, setRegisterStatus] = useState('')
-    const [registerInfo, setRegisterInfo] = useState('')
-    const [openAddModal, setOpenAddModal] = useState(false)
-    const [disableButton, setDisableButton] = useState(false)
-    const [loadingList, setLoadingList] = useState(false)
-    const [totalItens, setTotalItens] = useState(0)
-    const [totalPages, setTotalPages] = useState(0)
-    const [name, setName] = useState('')
-    const [document, setDocument] = useState('')
-    const [email, setEmail] = useState('')
-    const [cellPhone, setCellPhone] = useState('')
-    const [phone, setPhone] = useState('')
-    const [street, setStreet] = useState('')
-    const [number, setNumber] = useState('')
-    const [complement, setComplement] = useState('')
-    const [district, setDistrict] = useState('')
-    const [city, setCity] = useState('')
-    const [state, setState] = useState('')
-    const [materialList, setMaterialList] = useState([])
-
-
-
     const [itensPerPage, setItensPerPage] = useState(5)
     const [currentPage, setCurrentPage] = useState(1)
     const [filter, setFilter] = useState({})
@@ -63,6 +28,10 @@ export const MaterialList = () => {
     const [optionsMaterialCode, setOptionsMaterialCode] = useState([])
     const [responseMaterialList, setResponseMaterialList] = useState({})
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
+    const [loadingList, setLoadingList] = useState(false)
+    const [openToast, setOpenToast] = useState(false)
+    const [openAddModal, setOpenAddModal] = useState(false)
+
     const { isAdm, materialPage } = useAuth()
 
     const handleCloseAddModal = () => { setOpenAddModal(false) }
@@ -118,52 +87,6 @@ export const MaterialList = () => {
         setLoadingList(false)
     }
 
-    async function registerClient() {
-        let body = {
-            name: `${name}`,
-            document: `${document}`,
-            email: `${email}`,
-            telephone: `${phone}`,
-            cellphone: `${cellPhone}`,
-            street: `${street}`,
-            number: `${number}`,
-            complement: `${complement}`,
-            district: `${district}`,
-            city: `${city}`,
-            state: `${state}`
-        }
-
-        await api.post(`/client`, body)
-            .then(
-                response => {
-                    setRegisterStatus('success')
-                    setRegisterInfo('Cliente cadastrado com sucesso')
-                    setOpenToast(true)
-                    paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
-                    setOpenAddModal(false)
-                    setDisableButton(false)
-                    setName('')
-                    setEmail('')
-                    setDocument('')
-                    setStreet('')
-                    setNumber('')
-                    setComplement('')
-                    setDistrict('')
-                    setState('')
-                    setCity('')
-                    setCellPhone('')
-                    setPhone('')
-                }
-            ).catch(erro => {
-                setDisableButton(false)
-                setRegisterStatus('error')
-                setRegisterInfo(erro.response.data.error)
-                setOpenToast(true)
-            })
-    }
-
-
-
     useEffect(() => {
         paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
         getOptions()
@@ -174,87 +97,97 @@ export const MaterialList = () => {
         <React.Fragment>
             <CustomTitlePaper>
                 <Typography>
-                    Insumos
+                    Controle de Estoque
                 </Typography>
             </CustomTitlePaper>
 
             <CustomPaper>
                 <CustomHeader>
-                    <SearchField>
-                        <TextField
-                            id="outlined-required-materialNAme"
-                            label="Material"
-                            placeholder="digite o material"
-                            value={filter?.material}
-                            onChange={(e) => {
-                                setFilter({ ...filter, material: e.target.value })
-                            }}
-                        />
+                    {
+                        isAdm && (
+                            <SearchField>
+                                <TextField
+                                    id="outlined-required-materialNAme"
+                                    label="Material"
+                                    placeholder="digite o material"
+                                    value={filter?.material}
+                                    onChange={(e) => {
+                                        setFilter({ ...filter, material: e.target.value })
+                                    }}
+                                />
 
-                        <FormControl variant="outlined">
-                            <InputLabel id="select-outlined-label-codemat">Código do Material</InputLabel>
-                            <Select
-                                labelId="select-outlined-label-codemat"
-                                value={filter?.materialCode}
-                                onChange={(e) => {
-                                    setFilter({ ...filter, materialCode: e.target.value })
-                                }}
-                                label="Código do Material"
-                            >
-                                <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
-                                {
-                                    optionsMaterialCode.length > 0 && (
-                                        optionsMaterialCode.map(elem => (
-                                            <MenuItem value={elem}>{elem}</MenuItem>
-                                        ))
-                                    )
-                                }
-                            </Select>
-                        </FormControl>
+                                <FormControl variant="outlined">
+                                    <InputLabel id="select-outlined-label-codemat">Código do Material</InputLabel>
+                                    <Select
+                                        labelId="select-outlined-label-codemat"
+                                        value={filter?.materialCode}
+                                        onChange={(e) => {
+                                            setFilter({ ...filter, materialCode: e.target.value })
+                                        }}
+                                        label="Código do Material"
+                                    >
+                                        <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
+                                        {
+                                            optionsMaterialCode.length > 0 && (
+                                                optionsMaterialCode.map(elem => (
+                                                    <MenuItem value={elem}>{elem}</MenuItem>
+                                                ))
+                                            )
+                                        }
+                                    </Select>
+                                </FormControl>
 
-                        <FormControl variant="outlined">
-                            <InputLabel id="select-outlined-label-type">Tipo</InputLabel>
-                            <Select
-                                labelId="select-outlined-label-type"
-                                value={filter?.type}
-                                onChange={(e) => {
-                                    setFilter({ ...filter, type: e.target.value })
-                                }}
-                                label="Tipo"
-                            >
-                                <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
-                                {
-                                    optionsType.length > 0 && (
-                                        optionsType.map(elem => (
-                                            <MenuItem value={elem}>{elem}</MenuItem>
-                                        ))
-                                    )
-                                }
-                            </Select>
-                        </FormControl>
+                                <FormControl variant="outlined">
+                                    <InputLabel id="select-outlined-label-type">Tipo</InputLabel>
+                                    <Select
+                                        labelId="select-outlined-label-type"
+                                        value={filter?.type}
+                                        onChange={(e) => {
+                                            setFilter({ ...filter, type: e.target.value })
+                                        }}
+                                        label="Tipo"
+                                    >
+                                        <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
+                                        {
+                                            optionsType.length > 0 && (
+                                                optionsType.map(elem => (
+                                                    <MenuItem value={elem}>{elem}</MenuItem>
+                                                ))
+                                            )
+                                        }
+                                    </Select>
+                                </FormControl>
 
-                        <IconButtons src={searchIcon}
-                            onClick={() => {
-                                paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
-                            }}
-                        />
+                                <IconButtons src={searchIcon}
+                                    onClick={() => {
+                                        paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
+                                    }}
+                                />
 
-                        <ClearButton
-                            onClick={() => {
-                                setFilter(null)
-                                setCurrentPage(1)
-                                paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
-                            }
-                            }>
-                            Limpar
-                        </ClearButton>
+                                <ClearButton
+                                    onClick={() => {
+                                        setFilter(null)
+                                        setCurrentPage(1)
+                                        paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
+                                    }
+                                    }>
+                                    Limpar
+                                </ClearButton>
 
-                    </SearchField>
+                            </SearchField>
+                        )
+                    }
 
-                    <AddButton
-                        onClick={() => setOpenAddModal(true)}>
-                        Cadastrar
-                    </AddButton>
+
+                    {
+                        (isAdm || materialPage.Creator) && (
+                            <AddButton
+                                onClick={() => setOpenAddModal(true)}>
+                                Cadastrar
+                            </AddButton>
+                        )
+                    }
+
                 </CustomHeader>
 
                 {
@@ -277,9 +210,8 @@ export const MaterialList = () => {
 
                                         {responseMaterialList?.materialList.map(item => (
                                             <MaterialCard
-                                                materialObjt={item}
+                                                material={item}
                                                 key={item._id}
-                                                handleReloadPage={handleReloadPage}
                                             />
                                         ))
                                         }

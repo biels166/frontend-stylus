@@ -421,13 +421,269 @@ api.DeleteClient = async (clientId) => {
 }
 //#endregion
 
-//#region ContactsController
-api.PaginatedContactListByClient = async (clientId, pageNumber, rowsPage) => {
+//#region PartnerController
+api.PaginatedPartnerList = async (filter, pageNumber, rowsPage) => {
     ConfigureHeader()
 
-    const body = { clientId, pageNumber: pageNumber - 1, rowsPage }
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
 
-    return await api.post('/client-contact/list', body)
+    console.log('body PaginatedPartnerList', body)
+    
+    return await api.post('/partner/list', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                partners: response.data.partners
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                partners: []
+            }
+        })
+}
+
+api.GetSupplierOptions = async (category) => {
+    ConfigureHeader()
+
+    return await api.get(`/partner/suppliers/${category}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                partners: response.data.partners
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                partners: []
+            }
+        })
+}
+
+api.CreatePartner = async (partnerData) => {
+    ConfigureHeader()
+
+    const body = { ...partnerData }
+
+    return await api.post('/partner', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                partner: response.data.partner
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                partner: null
+            }
+        })
+}
+
+api.UpdatePartner = async (partnerData) => {
+    ConfigureHeader()
+
+    const body = { ...partnerData }
+
+    return await api.put(`/partner/${partnerData._id}`, body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                partner: response.data.partner
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                partner: null
+            }
+        })
+}
+
+api.GetPartnerById = async (partnerId) => {
+    ConfigureHeader()
+
+    return await api.get(`/partner/${partnerId}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: 'Dados carregados com sucesso.',
+                partner: response.data
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                partner: null
+            }
+        })
+}
+
+api.DeletePartner = async (partnerId) => {
+    ConfigureHeader()
+
+    return await api.delete(`/partner/${partnerId}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.message
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+            }
+        })
+}
+
+api.PaginatedOfferedList = async (partnerId, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = {
+        partnerId, pageNumber: pageNumber - 1, rowsPage
+    }
+
+    return await api.post('/partner/offered/list', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                offered: response.data.offered
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                offered: []
+            }
+        })
+}
+
+api.CreateOffered = async (offeredData) => {
+    ConfigureHeader()
+
+    const body = { ...offeredData }
+
+    return await api.post('/partner/offered', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                offered: response.data.offered
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                offered: null
+            }
+        })
+}
+
+api.UpdateOffered = async (offeredData) => {
+    ConfigureHeader()
+
+    const body = { ...offeredData }
+
+    return await api.put(`/partner/offered/${offeredData._id}`, body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                offered: response.data.offered
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                offered: null
+            }
+        })
+}
+
+api.DeleteOffered = async (offeredId) => {
+    ConfigureHeader()
+
+    return await api.delete(`/partner/offered/${offeredId}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.message
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+            }
+        })
+}
+//#endregion
+
+//#region ContactsController
+api.PaginatedContactListByPerson = async (personId, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = { personId, pageNumber: pageNumber - 1, rowsPage }
+
+    return await api.post('/contacts/list', body)
         .then(response => {
             return {
                 success: true,
@@ -457,7 +713,7 @@ api.CreateContact = async (contactData) => {
     ConfigureHeader()
 
     const body = { ...contactData }
-    return await api.post('/client-contact', body)
+    return await api.post('/contacts', body)
         .then(response => {
             return {
                 success: true,
@@ -482,7 +738,7 @@ api.UpdateContact = async (contactData) => {
 
     const body = { ...contactData }
 
-    return await api.put(`/client-contact/${contactData._id}`, body)
+    return await api.put(`/contacts/${contactData._id}`, body)
         .then(response => {
             return {
                 success: true,
@@ -505,7 +761,7 @@ api.UpdateContact = async (contactData) => {
 api.DeleteContact = async (contactId) => {
     ConfigureHeader()
 
-    return await api.delete(`/client-contact/${contactId}`)
+    return await api.delete(`/contacts/${contactId}`)
         .then(response => {
             return {
                 success: true,
@@ -741,12 +997,62 @@ api.DeleteItemCategory = async (id) => {
         })
 }
 
+api.GetByItemCode = async (itemCode) => {
+    ConfigureHeader()
+
+    return await api.get(`category/item/${itemCode}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: 'Dados carregados com sucesso.',
+                item: response.data
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                item: null
+            }
+        })
+}
+
 api.PaginatedItensByCategory = async (filter, pageNumber, rowsPage) => {
     ConfigureHeader()
 
     const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
 
     return await api.post('/category/listItemByCategory', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                itens: response.data.itens
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                itens: []
+            }
+        })
+}
+
+api.GetAllItensByCategory = async (categoriesCode) => {
+    ConfigureHeader()
+
+    return await api.post('/category/getItemByCategory', categoriesCode)
         .then(response => {
             return {
                 success: true,

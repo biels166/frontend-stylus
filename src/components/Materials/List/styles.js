@@ -3,23 +3,15 @@ import { Box, Button, Pagination, Paper } from '@mui/material'
 import SVG from 'react-inlinesvg'
 
 
-
 export const CustomPaper = styled(Box)({
     height: '100%',
     Width: '100%',
     display: "flex",
     flexDirection: 'column',
-    padding: '10px 40px 20px',
+    padding: '5px 20px',
     margin: '0px 0px 10px',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E8EAED',
     borderBottomRadius: '80px',
-    '& .MuiTypography-root': {
-        color: '#003C73',
-        fontWeight: 'bolder',
-        fontFamily: 'sans-serif',
-        fontSize: '20px',
-    }
-
 });
 
 export const CustomTitlePaper = styled(Box)({
@@ -54,24 +46,41 @@ export const SearchField = styled("div")({
     flexDirection: 'row',
     alignItems: 'center',
     '& .MuiTextField-root': {
-        m: 1,
-        width: '40ch',
-        '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-                borderColor: '#003C73',
-                borderRadius: '10px',
-            },
-            '&:hover fieldset': {
-                borderColor: '#003C73',
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: '#003C73',
-            },
+      m: 1,
+      width: '40ch',
+      marginRight: '10px',
+      '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+          borderColor: '#003C73',
+          borderRadius: '10px',
         },
-
+        '&:hover fieldset': {
+          borderColor: '#003C73',
+        },
+        '&.Mui-focused fieldset': {
+          borderColor: '#003C73',
+        },
+      },
     },
-    
-});
+
+    '& .MuiFormControl-root': {
+        m: 1,
+        width: '25ch',
+        margin: '10px 5px 10px 5px',
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: '#003C73',
+            borderRadius: '10px',
+          },
+          '&:hover fieldset': {
+            borderColor: '#003C73',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#003C73',
+          },
+        },
+      },
+  });
 
 export const CustomHeader = styled("div")({
     display: 'flex',
@@ -177,23 +186,23 @@ export const CustomPaginator = styled(Pagination)({
 })
 
 export const CustomModalPaper = styled(Paper)({
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        minWidth: 'auto',
-        height: 'auto',
-        marginTop: '10px',
-        backgroundColor: '#FFFFFF',
-        border: '2px solid #003C73',
-        boxShadow: '24',
-        padding: '16px',
-        '& .MuiTypography-root': {
-            color: '#003C73',
-            fontWeight: 'bolder',
-            fontFamily: 'sans-serif',
-            fontSize: '20px',
-        }
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    minWidth: 'auto',
+    height: 'auto',
+    marginTop: '10px',
+    backgroundColor: '#FFFFFF',
+    border: '2px solid #003C73',
+    boxShadow: '24',
+    padding: '16px',
+    '& .MuiTypography-root': {
+        color: '#003C73',
+        fontWeight: 'bolder',
+        fontFamily: 'sans-serif',
+        fontSize: '20px',
+    }
 })
 
 export const CustomModalHeader = styled("div")({

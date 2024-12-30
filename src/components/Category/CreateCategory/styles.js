@@ -1,7 +1,16 @@
 import styled from "styled-components";
 import { Box, Paper } from '@mui/material'
 import SVG from 'react-inlinesvg'
+import PrecisionManufacturingOutlinedIcon from '@mui/icons-material/PrecisionManufacturingOutlined';
+import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
 
+export const CustomOutsourcedIcon = styled(PrecisionManufacturingOutlinedIcon)({
+    color: '#003C73'
+})
+
+export const CustomSupplierIcon = styled(AddShoppingCartOutlinedIcon)({
+    color: '#003C73'
+})
 
 export const CloseIcon = styled(SVG)({
     borderRadius: '8px',

@@ -59,8 +59,8 @@ export const TaskBoard = () => {
     const defaultFilter = {
         userId: user?._id,
         type: '',
-        status: false,
-        dateFilter: 'month'
+        status: 1,
+        dateFilter: ''
     }
 
     const defaultNewTask = {
@@ -93,8 +93,9 @@ export const TaskBoard = () => {
     ]
 
     const statusOptions = [
-        { description: 'Sim', value: true },
-        { description: 'Não', value: false }
+        { description: 'Em Andamento', value: 1 },
+        { description: 'Concluídas', value: 2 },
+        { description: 'Todas', value: 3 }
     ]
 
     const handleCloseToast = () => { setOpenToast(false) }
@@ -149,7 +150,7 @@ export const TaskBoard = () => {
         <React.Fragment>
             <CustomTitlePaper>
                 <Typography>
-                    {user?.name?.split(' ')[0]}, aqui estão suas tarefas.
+                    {user?.name?.split(' ')[0]}, aqui estão suas tarefas
                 </Typography>
             </CustomTitlePaper>
 
@@ -201,9 +202,9 @@ export const TaskBoard = () => {
                 </FormControl>
 
                 <FormControl variant="outlined" width={'100%'}>
-                    <InputLabel id="select-outlined-label-completed">Apenas Concluídas ?</InputLabel>
+                    <InputLabel id="select-outlined-label-status">Status</InputLabel>
                     <Select
-                        labelId="select-outlined-label-completed"
+                        labelId="select-outlined-label-status"
                         value={filter.status}
                         onChange={(evt) => {
                             setFilter({ ...filter, status: evt.target.value })

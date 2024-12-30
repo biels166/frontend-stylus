@@ -20,7 +20,7 @@ export const CustomModalPaper = styled(Paper)({
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        minWidth: 'auto',
+        minWidth: '400px',
         height: 'auto',
         marginTop: '10px',
         backgroundColor: '#FFFFFF',
@@ -31,7 +31,15 @@ export const CustomModalPaper = styled(Paper)({
             color: '#003C73',
             fontWeight: 'bolder',
             fontFamily: 'sans-serif',
-            fontSize: '20px',
+            fontSize: '20px'
+        },
+        '& span': {
+            margin: '10px 0px',
+            alignSelf: 'flex-start',
+            fontFamily: 'sans-serif',
+            fontWeight: 'bolder',
+            fontSize: '16px',
+            color: '#005F89',
         }
 })
 
@@ -49,9 +57,27 @@ export const CustomModalBody = styled("div")({
     marginBottom: '20px',
     justifyContent: 'space-between',
     alignItems: 'center',
-    '& .MuiTextField-root, & .MuiFormControl-root': {
+    '& .MuiTextField-root': {
         m: 1,
         width: '25ch',
+        marginTop: '10px',
+        '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+                borderColor: '#003C73',
+                borderRadius: '10px',
+            },
+            '&:hover fieldset': {
+                borderColor: '#003C73',
+            },
+            '&.Mui-focused fieldset': {
+                borderColor: '#003C73',
+            },
+        },
+
+    },
+    '& .MuiFormControl-root': {
+        m: 1,
+        width: '100%',
         marginTop: '10px',
         '& .MuiOutlinedInput-root': {
             '& fieldset': {
@@ -88,7 +114,7 @@ export const RegisterButton = styled("button")({
     fontSize: 16,
     fontWeight: 'bold',
     cursor: 'pointer',
-    margin: 'auto 0px auto 0px',
+    margin: 'auto 0px auto 10px',
     '&:hover:not(:disabled)': {
         backgroundColor: '#005F89',
         boxShadow: '2px 2px 5px grey',
@@ -98,5 +124,24 @@ export const RegisterButton = styled("button")({
         backgroundColor: '#DCDCDC',
         WebkitTextFillColor: '#FFFFFF',
         cursor: 'not-allowed'
+    }
+});
+
+export const ClearButton = styled("button")({
+    backgroundColor: '#DCDCDC',
+    boxShadow: '0.5px 0.5px 1px grey',
+    minHeight: '40px',
+    width: '100px',
+    borderRadius: '4px',
+    borderWidth: '0px',
+    WebkitTextFillColor: '#003C73',
+    fontSize: 16,
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    margin: 'auto 0px auto 0px',
+    '&:hover': {
+        backgroundColor: '#FFFFFF',
+        boxShadow: '2px 2px 5px grey',
+        WebkitTextFillColor: '#005F89'
     }
 });

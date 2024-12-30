@@ -9,6 +9,7 @@ import InternalErrorPage from '../views/Errors/InternalError'
 import UnauthorizedPage from '../views/Errors/Unauthorized'
 import { PrivateRoute } from './PrivateRoute'
 import { ClientDataTabs } from '../components/Clientes/ClientData'
+import { PartnerDataTabs } from '../components/Partners/PartnerData'
 
 export const Routering = () => {
     const menuItens = NavItems()
@@ -33,6 +34,7 @@ export const Routering = () => {
                                         />
 
                                         <Route path='/clientes/:clientId' element={<ClientDataTabs />} />
+                                        <Route path='/parceiros/:partnerId' element={<PartnerDataTabs />} />
                                     </React.Fragment>
                                 ))
                             }

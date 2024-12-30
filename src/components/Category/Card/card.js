@@ -45,7 +45,7 @@ export const CategoryCard = ({
     <React.Fragment>
       <Container>
         <Grid container spacing={3}>
-          <Grid item xs={4} lg={4}>
+          <Grid item xs={6} lg={6}>
             <Typography>
               Item: <span>{item.itemCode} - {item.name}</span>
             </Typography>

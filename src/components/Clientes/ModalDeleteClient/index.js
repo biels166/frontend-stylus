@@ -5,7 +5,6 @@ import closeIcon from '../../../assets/close_icon.svg'
 import api from '../../../services/api'
 import { Modal, Typography } from '@mui/material'
 import { CustomToast } from '../../Toast'
-import { useAuth } from '../../../context/AuthContext'
 
 export const ModalDeleteClient = ({
     open, client, handleClose, handleReloadPage = () => Boolean
@@ -13,7 +12,6 @@ export const ModalDeleteClient = ({
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
     const [openToast, setOpenToast] = useState(false)
     const [disableButton, setDisableButton] = useState(false)
-    const { user } = useAuth()
 
     const handleCloseToast = () => { setOpenToast(false) }
     const handleOnClose = () => {

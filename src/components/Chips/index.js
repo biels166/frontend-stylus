@@ -60,10 +60,20 @@ export const ChipsArray = ({ isAdmnistrator, userRoles, hanleUpdateForm = () => 
                         <ListItem key={data.description}>
                             <Chip
                                 variant={data.value ? "filled" : "outlined"}
-                                color={data.value ? "info" : "error"}
-                                label={data.description}
-                                deleteIcon={data.value ? <DeleteForeverIcon /> : <DoneOutlineIcon />}
-                                onDelete={handleChange(data)}
+                                color="info"
+                                sx={data.value ? {
+                                    backgroundColor: '#003C73',
+                                    borderColor: '#003C73',
+                                    color: '#FFF',
+                                } : {
+                                    borderColor: '#003C73',
+                                    color: '#003C73',
+                                }}                                label={data.description}
+                                deleteIcon={
+                                    data.value ?
+                                        <DeleteForeverIcon sx={{ fill: '#FFF' }} /> :
+                                        <DoneOutlineIcon sx={{ fill: '#003C73' }} />
+                                } onDelete={handleChange(data)}
                             />
                         </ListItem>
                     );

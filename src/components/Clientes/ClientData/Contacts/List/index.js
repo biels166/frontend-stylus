@@ -27,7 +27,7 @@ export const ContactsList = () => {
         cellphone: '',
         telephone: '',
         email: '',
-        clientId: clientId
+        personId: clientId
     }
 
     const [itensPerPage, setItensPerPage] = useState(5)
@@ -53,10 +53,10 @@ export const ContactsList = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    async function paginatedContactListByClient(clientId, pageNumber, rowsPage, sequenceRequest = false) {
+    async function paginatedContactListByClient(personId, pageNumber, rowsPage, sequenceRequest = false) {
         setLoadingList(true)
 
-        const response = await api.PaginatedContactListByClient(clientId, pageNumber, rowsPage)
+        const response = await api.PaginatedContactListByPerson(personId, pageNumber, rowsPage)
 
         if (response.success) {
             setCurrentPage(pageNumber)

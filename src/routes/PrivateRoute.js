@@ -11,6 +11,7 @@ export const PrivateRoute = () => {
         isAdm,
         userPage,
         clientPage,
+        partnerPage,
         productPage,
         materialPage,
         quotePage,
@@ -39,6 +40,7 @@ export const PrivateRoute = () => {
         !isAdm && (
             (currentPath === '/usuarios' && !userPage.Viewer) ||
             (currentPath.includes('/clientes') && !clientPage.Viewer) ||
+            (currentPath.includes('/parceiros') && !partnerPage.Viewer) ||
             (currentPath === '/produtos' && !productPage.Viewer) ||
             (currentPath === '/materiais' && !materialPage.Viewer) ||
             (currentPath === '/cotacoes' && !quotePage.Viewer) ||

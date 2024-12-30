@@ -122,7 +122,7 @@ export const ClientList = () => {
                             required
                             id="outlined-required-name"
                             label="Nome"
-                            placeholder="digite o nome do usuário"
+                            placeholder="digite o nome do cliente"
                             value={filter}
                             onChange={(e) => { setFilter(e.target.value) }}
                         />

@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
     const [isAdm, setIsAdm] = useState(false)
     const [userPage, setUserPage] = useState(defaultPermissionObject)
     const [clientPage, setClientPage] = useState(defaultPermissionObject)
+    const [partnerPage, setPartnerPage] = useState(defaultPermissionObject)
     const [productPage, setProductPage] = useState(defaultPermissionObject)
     const [materialPage, setMaterialPage] = useState(defaultPermissionObject)
     const [quotePage, setQuotePage] = useState(defaultPermissionObject)
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         setIsAdm(false)
         setUserPage(defaultPermissionObject)
         setClientPage(defaultPermissionObject)
+        setPartnerPage(defaultPermissionObject)
         setProductPage(defaultPermissionObject)
         setMaterialPage(defaultPermissionObject)
         setQuotePage(defaultPermissionObject)
@@ -60,7 +62,7 @@ export const AuthProvider = ({ children }) => {
             const roles = dynLocalUser.roles.filter(r => r.value)
 
             setStylusToken(token)
-           
+
             setUser(dynLocalUser)
 
             setIsAdm(dynLocalUser.admnistrator)
@@ -81,6 +83,14 @@ export const AuthProvider = ({ children }) => {
                 Creator: rolesClientPage.some(r => r.description.includes('ADICIONAR')),
                 Editor: rolesClientPage.some(r => r.description.includes('EDITAR')),
                 Exclusor: rolesClientPage.some(r => r.description.includes('REMOVER')),
+            })
+
+            const rolesPartnerPage = roles.filter(r => r.category === 'parceiro')
+            setPartnerPage({
+                Viewer: rolesPartnerPage.some(r => r.description.includes('VISUALIZAR')),
+                Creator: rolesPartnerPage.some(r => r.description.includes('ADICIONAR')),
+                Editor: rolesPartnerPage.some(r => r.description.includes('EDITAR')),
+                Exclusor: rolesPartnerPage.some(r => r.description.includes('REMOVER')),
             })
 
             const rolesProductPage = roles.filter(r => r.category === 'produto')
@@ -164,6 +174,7 @@ export const AuthProvider = ({ children }) => {
                 isAdm,
                 userPage,
                 clientPage,
+                partnerPage,
                 productPage,
                 materialPage,
                 quotePage,

@@ -41,7 +41,7 @@ export const ModalEditContact = ({
         setDisableButton(true)
         const response = await api.UpdateContact({
             ...form,
-            clientId,
+            personId: clientId,
         })
 
         if (response.success) {

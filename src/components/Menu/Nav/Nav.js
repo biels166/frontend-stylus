@@ -20,6 +20,7 @@ import InternalErrorPage from '../../../views/Errors/InternalError'
 import { ClientDataTabs } from '../../Clientes/ClientData'
 import { TaskBoard } from '../../../views/TaskBoard'
 import { CategoryTabs } from '../../Category'
+import { PartnerList } from './../../Partners/List/index';
 
 export const NavErrors = () => {
     return [
@@ -39,7 +40,7 @@ export const NavErrors = () => {
 }
 
 export const NavItems = () => {
-    const { isAdm, userPage, clientPage, productPage, materialPage, } = useAuth()
+    const { isAdm, userPage, clientPage, partnerPage, productPage, materialPage, } = useAuth()
     return [
         //Homa
         {
@@ -90,9 +91,33 @@ export const NavItems = () => {
                 }
             ]
         },
-        //Produtos e Serviços
+        //Parceiros
         {
             index: 3,
+            name: 'Parceiros',
+            path: '/parceiros',
+            icon: PartnersIcon,
+            element: <PartnerList />,
+            roles: [
+                process.env.REACT_APP_ADMINISTRADOR,
+                process.env.REACT_APP_VISUALIZAR_PARCEIRO
+            ],
+            enable: isAdm || partnerPage.Viewer,
+            show: true,
+            children: [
+                {
+                    index: 2,
+                    name: 'Dados do Parceiro',
+                    path: '/parceiros/:partnerId',
+                    enable: isAdm || partnerPage.Viewer,
+                    show: true,
+                    element: <ClientDataTabs />,
+                }
+            ]
+        },
+        //Produtos e Serviços
+        {
+            index: 4,
             name: 'Produtos e Serviços',
             path: '/produtos',
             icon: CustomProductIcon,
@@ -106,7 +131,7 @@ export const NavItems = () => {
         },
         //Categoria de Materiais
         {
-            index: 4,
+            index: 5,
             name: 'Categoria de Materiais',
             path: '/materiais',
             icon: CustomCategoryIcon,
@@ -120,30 +145,16 @@ export const NavItems = () => {
         },
         //Insumos
         {
-            index: 5,
-            name: 'Insumos',
-            path: '/insumos',
+            index: 6,
+            name: 'Estoque',
+            path: '/estoque',
             icon: CustomMaterialsIcon,
             element: <MaterialList />,
             roles: [
                 process.env.REACT_APP_ADMINISTRADOR,
                 process.env.REACT_APP_VISUALIZAR_MATERIAL
             ],
-            enable: isAdm,
-            show: true
-        },
-        //Terceiros
-        {
-            index: 6,
-            name: 'Serviços de terceiros',
-            path: '/servicos-terceiros',
-            icon: PartnersIcon,
-            element: <MaterialList />,
-            roles: [
-                process.env.REACT_APP_ADMINISTRADOR,
-                process.env.REACT_APP_VISUALIZAR_MATERIAL
-            ],
-            enable: isAdm,
+            enable: isAdm || materialPage.Viewer,
             show: true
         },
         //Cotações
@@ -158,7 +169,7 @@ export const NavItems = () => {
                 process.env.REACT_APP_VISUALIZAR_COTACAO
             ],
             enable: isAdm,
-            show: false
+            show: true
         },
         //Ordens de Serviço
         {
@@ -172,7 +183,7 @@ export const NavItems = () => {
                 process.env.REACT_APP_VISUALIZAR_OS
             ],
             enable: isAdm,
-            show: false
+            show: true
         },
     ]
 }

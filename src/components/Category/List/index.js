@@ -177,7 +177,7 @@ export const ItensByCategoryList = () => {
                                     </React.Fragment>
                                     : <CustomResponse>
                                         <Typography>
-                                            Não existem itens cadastrados ou não foi possível encontrar nenhum ite, para a categoria informada.
+                                            Não existem itens cadastrados ou não foi possível encontrar nenhum item, para a categoria informada.
                                         </Typography>
                                     </CustomResponse>
                             }

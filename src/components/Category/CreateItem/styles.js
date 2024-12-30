@@ -77,6 +77,7 @@ export const CustomHeader = styled("div")({
 
     }
 });
+
 export const CustomModalBody = styled("div")({
     display: 'flex',
     flexDirection: 'column',

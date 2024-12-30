@@ -26,7 +26,7 @@ export const CategoryTabs = () => {
         <React.Fragment>
             <CustomTitlePaper>
                 <Typography>
-                    Categoria de Materiais
+                    Categoria de Materiais ou Serviço
                 </Typography>
             </CustomTitlePaper>
 
@@ -101,6 +101,7 @@ export const CategoryTabs = () => {
                         <TabPanel value={0} index={0} >
                             <CategoryForm />
                         </TabPanel>
+                        
                         <TabPanel value={1} index={1} >
                             <ItemForm />
                         </TabPanel>

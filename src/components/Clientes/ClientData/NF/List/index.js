@@ -31,7 +31,6 @@ export const ClientNFList = () => {
         clientId: clientId
     }
 
-    const ITENS_PER_PERGE = 10
     const [itensPerPage, setItensPerPage] = useState(5)
     const [loadingList, setLoadingList] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
@@ -46,12 +45,12 @@ export const ClientNFList = () => {
     const handleReloadPage = (reload, sequenceRequest = false) => {
         if (reload) {
             setForm(defaultForm)
-            paginatedNFListByClient(clientId, 1, ITENS_PER_PERGE, sequenceRequest)
+            paginatedNFListByClient(clientId, 1, itensPerPage, sequenceRequest)
         }
     }
     const handleChangePage = (event, value) => {
         setCurrentPage(value)
-        paginatedNFListByClient(clientId, value, ITENS_PER_PERGE)
+        paginatedNFListByClient(clientId, value, itensPerPage)
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
@@ -101,7 +100,7 @@ export const ClientNFList = () => {
     }
 
     useEffect(() => {
-        paginatedNFListByClient(clientId, 1, ITENS_PER_PERGE)
+        paginatedNFListByClient(clientId, 1, itensPerPage)
     }, [])
 
     return (

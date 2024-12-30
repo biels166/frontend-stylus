@@ -1,37 +1,127 @@
 
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { CustomModalPaper, CloseIcon, CustomModalHeader, CustomModalFooter, CustomModalBody, RegisterButton } from './styles'
+import { CustomModalPaper, CloseIcon, CustomModalHeader, CustomModalFooter, CustomModalBody, RegisterButton, ClearButton } from './styles'
 import closeIcon from '../../../assets/close_icon.svg'
 import api from '../../../services/api'
-import { Box, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
+import { Box, FormControl, getOffsetTop, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
 import { CustomToast } from '../../Toast'
 import { UFS } from '../../../constants/UFS'
-import { formatCellphone, formatDocument, formatPhone } from '../../../utils'
+import { formatCellphone, formatDocument, formatPhone, getOnlyNumber } from '../../../utils'
+import { useAuth } from '../../../context/AuthContext'
+import { DateInput } from '../../DateInput'
 
 export const ModalAddMaterial = ({
     open, handleClose, handleReloadPage = () => Boolean
 }) => {
-    const [form, setForm] = useState({})
+    const defaultForm = {
+        categoryId: '',
+        itemId: '',
+        type: '',
+        typeReference: '',
+        quantity: '',
+        quantityReference: '',
+        totalCost: '',
+        costPerItem: '',
+        observations: '',
+        supplierId: '',
+        purchasedIn: new Date
+    }
+
+    const [form, setForm] = useState(defaultForm)
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
     const [openToast, setOpenToast] = useState(false)
     const [disableButton, setDisableButton] = useState(false)
-    const types = ['Milheiro', 'Rolo', 'Pacote', 'Quilogramas', 'Galão']
+    const [categoryOptions, setCategoryOptions] = useState([])
+    const [itemOptions, setItemOptions] = useState([])
+    const [supplierOptions, setSupplierOptions] = useState([])
+
+    const { isAdm, materialPage } = useAuth()
+
+    const types = ['Milheiro', 'Rolo(s)', 'Pacote(s)', 'Galão(ões)', 'Pedaço(s)', 'Caixa(s)']
+
     const referenceTypes = [
         { reference: 'Milheiro', value: 'Unidade(s)' },
-        { reference: 'Rolo', value: 'Metros' },
-        { reference: 'Quilogramas', value: 'Quilogramas' },
-        { reference: 'Galão', value: 'Litros' },
-        { reference: 'Pacote', value: 'Folhas' }
+        { reference: 'Rolo(s)', value: 'Metros' },
+        { reference: 'Galão(ões)', value: 'Quilograma(s)' },
+        { reference: 'Pacote(s)', value: 'Folha(s)' },
+        { reference: 'Pedaço(s)', value: 'Unidade(s)' },
+        { reference: 'Caixa(s)', value: 'Unidade(s)' }
     ]
-    const getReferenceType = useCallback((type) => {
-        return referenceTypes.find(i => i.reference === type)?.value
-    }, [form])
+
+    const getReferenceType = useCallback(() => {
+        const { type } = form
+        let typeReference = ''
+
+        if (type) {
+            typeReference = referenceTypes.find(i => i.reference === type)?.value
+        }
+
+        return typeReference
+
+    }, [form?.type])
+
+    const calculateCostPerItem = useCallback(() => {
+        console.log('chamou calculateCostPerItem')
+        const { totalCost, quantity, quantityReference, categoryId, type } = form
+        let costPerItem = 0
+
+        if ((totalCost && totalCost > 0) && (quantity && quantity > 0)) {
+            let totalCostValue = 0
+            let quantityValue = 0
+            let quantityReferenceValue = 0
+
+            let selectedCategory = categoryOptions.filter(c => c.code === categoryId)[0]
+
+            try {
+                totalCostValue = parseFloat(totalCost)
+            } catch (error) {
+                console.error('totalCostValue', error)
+            }
+
+            try {
+                quantityValue = parseInt(quantity)
+            } catch (error) {
+                console.error('quantityValue', error)
+            }
+
+            try {
+                quantityReferenceValue = parseInt(quantityReference)
+            } catch (error) {
+                console.error('quantityReference', error)
+            }
+
+            switch (selectedCategory?.name) {
+                case 'PERCALUX':
+                    costPerItem = quantityReferenceValue > 0 ?
+                        totalCostValue / (quantityValue * 8 * quantityReferenceValue) :
+                        totalCostValue / (quantityValue * 8)
+                    break;
+
+                case 'PAPEL':
+                case 'WIRE-O':
+                    costPerItem = quantityReferenceValue > 0 ?
+                        totalCostValue / (quantityValue * quantityReferenceValue) :
+                        totalCostValue / (quantityValue)
+                    break;
+
+                case 'PAPELÃO':
+                    costPerItem = totalCostValue / quantityValue
+                    break;
+
+                default:
+                    costPerItem = totalCostValue / quantityValue
+                    break;
+            }
+        }
+
+        return costPerItem
+
+    }, [form?.quantity, form?.totalCost, form?.quantityReference, form?.type])
 
     useEffect(() => { setForm({}) }, [])
 
     useEffect(() => { console.log('form', form) }, [form])
-
 
     const handleCloseToast = () => { setOpenToast(false) }
     const handleOnClose = () => {
@@ -43,14 +133,18 @@ export const ModalAddMaterial = ({
         handleReloadPage(true)
     }
     const handleClear = () => {
-        setForm({})
+        setForm(defaultForm)
         setDisableButton(false)
     }
 
     async function createMaterial() {
         setDisableButton(true)
 
-        const response = await api.CreateMaterial(form)
+        const response = await api.CreateMaterial({
+            ...form,
+            typeReference: getReferenceType(),
+            costPerItem: calculateCostPerItem()
+        })
 
         if (response.success) {
             setTimeout(() => {
@@ -68,6 +162,27 @@ export const ModalAddMaterial = ({
         setDisableButton(false)
     }
 
+    async function getCategoryOptions() {
+        const response = await api.GetCategoryOptions()
+        setCategoryOptions(response.categories.filter(c => c.isMaterialCategory))
+    }
+
+    async function getItemOptions(categoryCode) {
+        const response = await api.GetAllItensByCategory([categoryCode])
+
+        setItemOptions(response.itens)
+    }
+
+    async function getSupplierOptions(categoryCode) {
+        const response = await api.GetSupplierOptions(categoryCode)
+
+        setSupplierOptions(response.partners)
+    }
+
+    useEffect(() => {
+        getCategoryOptions()
+    }, [])
+
     return (
         <React.Fragment>
             <Modal
@@ -78,7 +193,7 @@ export const ModalAddMaterial = ({
                 <CustomModalPaper>
                     <CustomModalHeader>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Cadastrar Novo Insumo
+                            Cadastrar Nova Compra
                         </Typography>
 
                         <CloseIcon src={closeIcon}
@@ -91,150 +206,234 @@ export const ModalAddMaterial = ({
 
                     <Box>
                         <CustomModalBody>
-                            <Box
-                                width={'100%'}
-                                display={'flex'}
-                                flexDirection={'row'}
-                            >
-                                <TextField
-                                    required
-                                    id="outlined-required-material"
-                                    label="Insumo"
-                                    placeholder="digite o nome do insumo"
-                                    value={form.material}
-                                    onChange={(e) => {
-                                        setForm({ ...form, material: e.target.value })
-                                    }}
-                                />
-
-                                <TextField
-                                    required
-                                    id="outlined-required-materialCode"
-                                    label="Código do insumo"
-                                    placeholder="digite o código do insumo"
-                                    value={form.materialCoda}
-                                    onChange={(e) => {
-                                        setForm({ ...form, materialCoda: e.target.value })
-                                    }}
-                                />
-                            </Box>
-
                             <FormControl variant="outlined">
-                                <InputLabel id="select-outlined-required-type">Tipo</InputLabel>
+                                <InputLabel id="select-outlined-label-options">Categoria do Material</InputLabel>
                                 <Select
-                                    id="outlined-required-type"
-                                    value={form.type}
+                                    required
+                                    labelId="select-outlined-label-options"
+                                    disabled={!isAdm && !materialPage.Creator}
+                                    value={form?.categoryId}
                                     onChange={(e) => {
-                                        setForm({
-                                            ...form,
-                                            type: e.target.value,
-                                            referenceType: referenceTypes.find(r => r.reference === e.target.value)?.value
-                                        })
+                                        let newForm = { ...form, categoryId: e.target.value }
+
+                                        if (form?.itemId !== '')
+                                            newForm = {
+                                                ...newForm,
+                                                itemId: '',
+                                                type: '',
+                                                typeReference: '',
+                                                quantity: '',
+                                                quantityReference: '',
+                                                totalCost: '',
+                                                costPerItem: '',
+                                                observations: '',
+                                                supplierId: '',
+                                                purchasedIn: new Date
+                                            }
+
+                                        setForm(newForm)
+                                        getItemOptions(e.target.value)
+                                        getSupplierOptions(e.target.value)
                                     }}
-                                    label="Tipo"
+                                    label="Categoria do Material"
                                 >
-                                    <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
                                     {
-                                        types.length > 0 && (
-                                            types.map(elem => (
-                                                <MenuItem value={elem}>{elem}</MenuItem>
+                                        categoryOptions?.length > 0 && (
+                                            categoryOptions?.map(elem => (
+                                                <MenuItem
+                                                    value={elem.code}>{elem.description}</MenuItem>
                                             ))
                                         )
                                     }
                                 </Select>
                             </FormControl>
 
-                            <Box
-                                width={'100%'}
-                                display={'flex'}
-                                flexDirection={'row'}
-                            >
-                                <TextField
-                                    required
-                                    id="outlined-required-reference"
-                                    label="Referência"
-                                    placeholder="digite o tipo de referência"
-                                    value={getReferenceType(form.type)}
-                                    onChange={(e) => {
-                                        setForm({ ...form, referenceType: e.target.value })
-                                    }}
-                                />
+                            {(form.categoryId && itemOptions?.length > 0) &&
+                                <React.Fragment>
+                                    <FormControl variant="outlined">
+                                        <InputLabel id="select-outlined-label-item-options">Item da Categoria</InputLabel>
+                                        <Select
+                                            required
+                                            labelId="select-outlined-label-item-options"
+                                            disabled={!isAdm && !materialPage.Creator}
+                                            value={form?.itemId}
+                                            onChange={(e) => {
+                                                setForm({ ...form, itemId: e.target.value })
+                                            }}
+                                            label="Item da Categoria"
+                                        >
+                                            {
+                                                itemOptions?.length > 0 && (
+                                                    itemOptions?.map(elem => (
+                                                        <MenuItem
+                                                            value={elem.itemCode}>{elem.itemCode} - {elem.name}</MenuItem>
+                                                    ))
+                                                )
+                                            }
+                                        </Select>
+                                    </FormControl>
 
-                                <FormControl variant="outlined">
-                                    <InputLabel id="select-outlined-required-referenceType">Referência</InputLabel>
-                                    <Select
-                                        id="outlined-required-reference"
-                                        value={form.referenceType}
-                                        onChange={(e) => {
-                                            console.log('reff alterada')
-                                            setForm({ ...form, referenceType: e.target.value })
-                                        }}
-                                        label="Referência"
-                                    >
-                                        {
+                                    {form?.itemId !== '' && (
+                                        <React.Fragment>
+                                            <span>Dados da Compra</span>
 
-                                            <MenuItem
-                                                value={getReferenceType(form.type)}>{getReferenceType(form.type)}</MenuItem>
+                                            <Box
+                                                width={'100%'}
+                                                display={'flex'}
+                                                gap={'10px'}
+                                                flexDirection={'row'}
+                                            >
+                                                <FormControl variant="outlined">
+                                                    <InputLabel id="select-outlined-label-item-options">Fornecedor</InputLabel>
+                                                    <Select
+                                                        required
+                                                        labelId="select-outlined-label-supplier-options"
+                                                        disabled={!isAdm && !materialPage.Creator}
+                                                        value={form?.supplierId}
+                                                        onChange={(e) => {
+                                                            setForm({ ...form, supplierId: e.target.value })
+                                                        }}
+                                                        label="Fornecedor"
+                                                    >
+                                                        {
+                                                            supplierOptions?.length > 0 && (
+                                                                supplierOptions?.map(elem => (
+                                                                    <MenuItem
+                                                                        value={elem._id}>{elem.name}</MenuItem>
+                                                                ))
+                                                            )
+                                                        }
+                                                    </Select>
+                                                </FormControl>
 
-                                        }
-                                    </Select>
-                                </FormControl>
+                                                <DateInput
+                                                    variant='outlined'
+                                                    label='Data da Compra*'
+                                                    disableFuture={true}
+                                                    selectedDate={form?.purchasedIn}
+                                                    valueCallback={(newDate) => setForm({ ...form, purchasedIn: newDate })}
+                                                />
+                                            </Box>
 
-                                <TextField
-                                    required
-                                    id="outlined-required-format"
-                                    label="Formato"
-                                    placeholder="digite o formato do insumo"
-                                    value={form.format}
-                                    onChange={(e) => {
-                                        setForm({ ...form, format: e.target.value })
-                                    }}
-                                />
-                            </Box>
+                                            <Box
+                                                width={'100%'}
+                                                display={'flex'}
+                                                gap={'10px'}
+                                                flexDirection={'row'}
+                                            >
+                                                <TextField
+                                                    required
+                                                    id="outlined-required-totalCost"
+                                                    label="Custo Total"
+                                                    placeholder="informa o valor total da compra"
+                                                    value={form.totalCost}
+                                                    onChange={(e) => {
+                                                        setForm({ ...form, totalCost: e.target.value.replace(/[^\d.,]/g, '') })
+                                                    }}
+                                                />
 
-                            <TextField
-                                required
-                                fullWidth
-                                id="outlined-required-quantity"
-                                label="Quantidade do Insumo"
-                                placeholder="digite a quantidade do insumo"
-                                value={form.quantity}
-                                onChange={(e) => {
-                                    setForm({ ...form, quantity: e.target.value })
-                                }}
-                            />
+                                                <TextField
+                                                    required
+                                                    fullWidth
+                                                    id="outlined-required-quantity"
+                                                    label="Quantidade Comprada"
+                                                    placeholder="informe a quantidade comprada"
+                                                    value={form.quantity}
+                                                    onChange={(e) => {
+                                                        setForm({ ...form, quantity: getOnlyNumber(e.target.value) })
+                                                    }}
+                                                />
 
-                            <Box
-                                width={'100%'}
-                                display={'flex'}
-                                flexDirection={'row'}
-                            >
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="outlined-required-referenceQtd"
-                                    label="Quantidade de Referência do Insumo"
-                                    placeholder="digite a quantidade do insumo"
-                                    value={form.referenceQtd}
-                                    onChange={(e) => {
-                                        setForm({ ...form, referenceQtd: e.target.value })
-                                    }}
-                                />
+                                                <FormControl variant="outlined">
+                                                    <InputLabel id="select-outlined-required-type">Tipo</InputLabel>
+                                                    <Select
+                                                        id="outlined-required-type"
+                                                        value={form.type}
+                                                        onChange={(e) => {
+                                                            setForm({ ...form, type: e.target.value, })
+                                                        }}
+                                                        label="Tipo"
+                                                    >
+                                                        <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
+                                                        {
+                                                            types.length > 0 && (
+                                                                types.map(elem => (
+                                                                    <MenuItem value={elem}>{elem}</MenuItem>
+                                                                ))
+                                                            )
+                                                        }
+                                                    </Select>
+                                                </FormControl>
+                                            </Box>
 
-                                <TextField
-                                    required
-                                    id="outlined-required-materialValue"
-                                    label="Valor"
-                                    placeholder="digite o valor do insumo"
-                                    value={form.materialValue}
-                                    onChange={(e) => {
-                                        setForm({ ...form, materialValue: e.target.value.replace(/[^\d.,]/g, '') })
-                                    }}
-                                />
-                            </Box>
+                                            <Box
+                                                width={'100%'}
+                                                display={'flex'}
+                                                gap={'10px'}
+                                                flexDirection={'row'}
+                                            >
+                                                <TextField
+                                                    disabled
+                                                    id="outlined-required-totalCost"
+                                                    label="Custo Por Unidade"
+                                                    value={calculateCostPerItem()}
+                                                />
+
+                                                <TextField
+                                                    required
+                                                    id="outlined-required-ref-quantity"
+                                                    label="Quantidade de Referência"
+                                                    placeholder="informe a quantidade de referência"
+                                                    value={form.quantityReference}
+                                                    onChange={(e) => {
+                                                        setForm({ ...form, quantityReference: getOnlyNumber(e.target.value) })
+                                                    }}
+                                                />
+
+                                                <TextField
+                                                    disabled
+                                                    id="outlined-required-typereference"
+                                                    label="Tipo de Referência"
+                                                    value={getReferenceType()}
+                                                />
+                                            </Box>
+
+
+                                            <Box
+                                                width={'100%'}
+                                                display={'flex'}
+                                                gap={'10px'}
+                                                flexDirection={'row'}
+                                            >
+                                                <TextField
+                                                    fullWidth={true}
+                                                    variant='outlined'
+                                                    required
+                                                    id="standard-required-observation"
+                                                    label="Observações"
+                                                    placeholder="observações"
+                                                    multiline
+                                                    maxRows={6}
+                                                    value={form?.observations}
+                                                    onChange={(e) => {
+                                                        setForm({ ...form, observations: e.target.value })
+                                                    }}
+                                                />
+                                            </Box>
+                                        </React.Fragment>
+                                    )}
+
+                                </React.Fragment>
+                            }
                         </CustomModalBody>
 
                         <CustomModalFooter>
+                            <ClearButton
+                                disabled={disableButton}
+                                onClick={handleClear}>
+                                Limpar
+                            </ClearButton>
+
                             <RegisterButton
                                 disabled={disableButton}
                                 onClick={() => {
