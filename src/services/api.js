@@ -779,7 +779,7 @@ api.DeleteContact = async (contactId) => {
         })
 }
 //#endregion
-
+ 
 //#region NFController
 api.PaginatedNFListByClient = async (clientId, pageNumber, rowsPage) => {
     ConfigureHeader()
@@ -1075,13 +1075,118 @@ api.GetAllItensByCategory = async (categoriesCode) => {
             }
         })
 }
+
+api.GetAllSupplierItens = async () => {
+    ConfigureHeader()
+
+    return await api.get('/category/listAllSupplierItens')
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                itens: response.data.itens
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                itens: []
+            }
+        })
+}
+
+//#endregion
+
+//#region BatchController
+api.GetBatch = async (batchCode) => {
+    ConfigureHeader()
+
+    return await api.get(`batch/${batchCode}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: 'Dados carregados com sucesso.',
+                batch: response.data
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                batch: null
+            }
+        })
+}
+
+api.ListBatchesOptions = async () => {
+    ConfigureHeader()
+
+    return await api.post('batch/options')
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: 'Dados carregados com sucesso.',
+                batch: response.data
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                batch: null
+            }
+        })
+}
+//#endregion
+
+//#region StockController
+api.ListStockControl = async () => {
+    ConfigureHeader()
+
+    return await api.post('stockControl/listStockControl')
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: 'Dados carregados com sucesso.',
+                stocks: response.data.stockControl,
+                total: response.data.total,
+                pages: response.data.pages,
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                stocks: null,
+                total: 0,
+                pages: 0,
+            }
+        })
+}
 //#endregion
 
 //#region MaterialController
 api.PaginatedMaterialListByFilter = async (filter, pageNumber, rowsPage) => {
     ConfigureHeader()
 
-    const body = { filter, pageNumber: pageNumber - 1, rowsPage }
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
 
     return await api.post('/material/listByFilter', body)
         .then(response => {

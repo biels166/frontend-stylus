@@ -21,6 +21,7 @@ import { ClientDataTabs } from '../../Clientes/ClientData'
 import { TaskBoard } from '../../../views/TaskBoard'
 import { CategoryTabs } from '../../Category'
 import { PartnerList } from './../../Partners/List/index';
+import { StockList } from '../../stock/List'
 
 export const NavErrors = () => {
     return [
@@ -106,7 +107,7 @@ export const NavItems = () => {
             show: true,
             children: [
                 {
-                    index: 2,
+                    index: 3,
                     name: 'Dados do Parceiro',
                     path: '/parceiros/:partnerId',
                     enable: isAdm || partnerPage.Viewer,
@@ -143,19 +144,29 @@ export const NavItems = () => {
             enable: isAdm || materialPage.Viewer,
             show: true
         },
-        //Insumos
+        //Estoque
         {
             index: 6,
             name: 'Estoque',
             path: '/estoque',
             icon: CustomMaterialsIcon,
-            element: <MaterialList />,
+            element: <StockList />,
             roles: [
                 process.env.REACT_APP_ADMINISTRADOR,
                 process.env.REACT_APP_VISUALIZAR_MATERIAL
             ],
             enable: isAdm || materialPage.Viewer,
-            show: true
+            show: true,
+            children: [
+                {
+                    index: 6,
+                    name: 'Estoque',
+                    path: '/estoque/:itemId',
+                    enable: isAdm || materialPage.Viewer,
+                    show: true,
+                    element: <MaterialList />,
+                }
+            ]
         },
         //Cotações
         {

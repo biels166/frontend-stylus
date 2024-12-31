@@ -19,11 +19,20 @@ import { useAuth } from '../../../context/AuthContext'
 import { CustomToast } from '../../Toast'
 import { PageControl } from '../../PageControl'
 import { ModalAddMaterial } from '../ModalAddMaterial'
+import { useLocation, useParams } from 'react-router-dom'
 
 export const MaterialList = () => {
+    const { itemId } = useParams()
+    const location = useLocation()
+    const dataFromStockPage = location?.state
+
+    const defaultFilter = {
+        itemId: itemId,
+    }
+    const [filter, setFilter] = useState(defaultFilter)
+    
     const [itensPerPage, setItensPerPage] = useState(5)
     const [currentPage, setCurrentPage] = useState(1)
-    const [filter, setFilter] = useState({})
     const [optionsType, setOptionsType] = useState([])
     const [optionsMaterialCode, setOptionsMaterialCode] = useState([])
     const [responseMaterialList, setResponseMaterialList] = useState({})
@@ -97,7 +106,7 @@ export const MaterialList = () => {
         <React.Fragment>
             <CustomTitlePaper>
                 <Typography>
-                    Controle de Estoque
+                    {dataFromStockPage.description}
                 </Typography>
             </CustomTitlePaper>
 

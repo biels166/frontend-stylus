@@ -10,6 +10,7 @@ import UnauthorizedPage from '../views/Errors/Unauthorized'
 import { PrivateRoute } from './PrivateRoute'
 import { ClientDataTabs } from '../components/Clientes/ClientData'
 import { PartnerDataTabs } from '../components/Partners/PartnerData'
+import { MaterialList } from '../components/Materials/List'
 
 export const Routering = () => {
     const menuItens = NavItems()
@@ -35,6 +36,7 @@ export const Routering = () => {
 
                                         <Route path='/clientes/:clientId' element={<ClientDataTabs />} />
                                         <Route path='/parceiros/:partnerId' element={<PartnerDataTabs />} />
+                                        <Route path='/estoque/:itemId' element={<MaterialList />} />
                                     </React.Fragment>
                                 ))
                             }

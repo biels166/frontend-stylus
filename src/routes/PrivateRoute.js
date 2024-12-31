@@ -43,6 +43,7 @@ export const PrivateRoute = () => {
             (currentPath.includes('/parceiros') && !partnerPage.Viewer) ||
             (currentPath === '/produtos' && !productPage.Viewer) ||
             (currentPath === '/materiais' && !materialPage.Viewer) ||
+            (currentPath.includes('/estoque') && !materialPage.Viewer) ||
             (currentPath === '/cotacoes' && !quotePage.Viewer) ||
             (currentPath === '/ordens' && !orderPage.Viewer)
         )
