@@ -16,14 +16,22 @@ export const CutomViewDetails = styled(PreviewIcon)({
 }
 )
 
+export const CutomDisableViewDetails = styled(PreviewIcon)({
+    color: '#C0C0C0',
+    padding: '3px 3px 2px 3px',
+    borderRadius: '8px',
+    cursor: 'not-allowed',
+}
+)
+
 export const Container = styled(Box)({
     height: 'auto',
     display: "flex",
     padding: '5px 20px',
     margin: '0px 0px 10px',
-    backgroundColor: '#D9D9D9',
+    backgroundColor: (props) => props.alert ? '#f7dfdf' : '#D9D9D9',
     borderTopWidth: '10px',
-    borderTopColor: '#003C73',
+    borderTopColor: (props) => props.alert ? '#FF0000' : '#003C73',
     borderTopStyle: 'solid',
     borderRadius: '8px',
     boxShadow: '5px 5px 10px grey',

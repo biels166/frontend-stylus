@@ -4,19 +4,18 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { CustomModalPaper, CloseIcon, CustomModalHeader, CustomModalFooter, CustomModalBody, RegisterButton, ClearButton } from './styles'
 import closeIcon from '../../../assets/close_icon.svg'
 import api from '../../../services/api'
-import { Box, FormControl, getOffsetTop, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
+import { Box, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
 import { CustomToast } from '../../Toast'
-import { UFS } from '../../../constants/UFS'
-import { formatCellphone, formatDocument, formatPhone, getOnlyNumber } from '../../../utils'
+import { getOnlyNumber } from '../../../utils'
 import { useAuth } from '../../../context/AuthContext'
 import { DateInput } from '../../DateInput'
 
 export const ModalAddMaterial = ({
-    open, handleClose, handleReloadPage = () => Boolean
+    stockData, open, handleClose, handleReloadPage = () => Boolean
 }) => {
     const defaultForm = {
-        categoryId: '',
-        itemId: '',
+        categoryId: stockData.categoryCode,
+        itemId: stockData.itemCode,
         type: '',
         typeReference: '',
         quantity: '',
@@ -164,13 +163,16 @@ export const ModalAddMaterial = ({
 
     async function getCategoryOptions() {
         const response = await api.GetCategoryOptions()
-        setCategoryOptions(response.categories.filter(c => c.isMaterialCategory))
+        setCategoryOptions(response.categories
+            .filter(c => c.code === stockData.categoryCode)
+        )
     }
 
     async function getItemOptions(categoryCode) {
         const response = await api.GetAllItensByCategory([categoryCode])
-
-        setItemOptions(response.itens)
+        setItemOptions(response.itens
+            .filter(c => c.itemCode === stockData.itemCode)
+        )
     }
 
     async function getSupplierOptions(categoryCode) {
@@ -181,6 +183,12 @@ export const ModalAddMaterial = ({
 
     useEffect(() => {
         getCategoryOptions()
+        getItemOptions([stockData.categoryCode])
+        getSupplierOptions(stockData.categoryCode)
+    }, [])
+
+    useEffect(() => {
+        console.log('stockData', stockData)
     }, [])
 
     return (
@@ -193,7 +201,7 @@ export const ModalAddMaterial = ({
                 <CustomModalPaper>
                     <CustomModalHeader>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Cadastrar Nova Compra
+                            Cadastrar Nova Compra - {stockData.description}
                         </Typography>
 
                         <CloseIcon src={closeIcon}
@@ -213,218 +221,191 @@ export const ModalAddMaterial = ({
                                     labelId="select-outlined-label-options"
                                     disabled={!isAdm && !materialPage.Creator}
                                     value={form?.categoryId}
-                                    onChange={(e) => {
-                                        let newForm = { ...form, categoryId: e.target.value }
-
-                                        if (form?.itemId !== '')
-                                            newForm = {
-                                                ...newForm,
-                                                itemId: '',
-                                                type: '',
-                                                typeReference: '',
-                                                quantity: '',
-                                                quantityReference: '',
-                                                totalCost: '',
-                                                costPerItem: '',
-                                                observations: '',
-                                                supplierId: '',
-                                                purchasedIn: new Date
-                                            }
-
-                                        setForm(newForm)
-                                        getItemOptions(e.target.value)
-                                        getSupplierOptions(e.target.value)
-                                    }}
                                     label="Categoria do Material"
+                                    onChange={(e) => {
+                                        setForm({ ...form, categoryId: e.target.value })
+                                    }}
                                 >
                                     {
                                         categoryOptions?.length > 0 && (
                                             categoryOptions?.map(elem => (
-                                                <MenuItem
-                                                    value={elem.code}>{elem.description}</MenuItem>
+                                                <MenuItem value={elem.code}>{elem.description}</MenuItem>
                                             ))
                                         )
                                     }
                                 </Select>
                             </FormControl>
 
-                            {(form.categoryId && itemOptions?.length > 0) &&
-                                <React.Fragment>
+                            <React.Fragment>
+                                <FormControl variant="outlined">
+                                    <InputLabel id="select-outlined-label-item-options">Item da Categoria</InputLabel>
+                                    <Select
+                                        required
+                                        labelId="select-outlined-label-item-options"
+                                        disabled={!isAdm && !materialPage.Creator}
+                                        value={form?.itemId}
+                                        label="Item da Categoria"
+                                        onChange={(e) => {
+                                            setForm({ ...form, itemId: e.target.value })
+                                        }}
+                                    >
+                                        {
+                                            itemOptions?.length > 0 && (
+                                                itemOptions?.map(elem => (
+                                                    <MenuItem value={elem.itemCode}>{elem.itemCode} - {elem.name}</MenuItem>
+                                                ))
+                                            )
+                                        }
+                                    </Select>
+                                </FormControl>
+
+                                <span>Dados da Compra</span>
+
+                                <Box
+                                    width={'100%'}
+                                    display={'flex'}
+                                    gap={'10px'}
+                                    flexDirection={'row'}
+                                >
                                     <FormControl variant="outlined">
-                                        <InputLabel id="select-outlined-label-item-options">Item da Categoria</InputLabel>
+                                        <InputLabel id="select-outlined-label-item-options">Fornecedor</InputLabel>
                                         <Select
                                             required
-                                            labelId="select-outlined-label-item-options"
+                                            labelId="select-outlined-label-supplier-options"
                                             disabled={!isAdm && !materialPage.Creator}
-                                            value={form?.itemId}
+                                            value={form?.supplierId}
                                             onChange={(e) => {
-                                                setForm({ ...form, itemId: e.target.value })
+                                                setForm({ ...form, supplierId: e.target.value })
                                             }}
-                                            label="Item da Categoria"
+                                            label="Fornecedor"
                                         >
                                             {
-                                                itemOptions?.length > 0 && (
-                                                    itemOptions?.map(elem => (
+                                                supplierOptions?.length > 0 && (
+                                                    supplierOptions?.map(elem => (
                                                         <MenuItem
-                                                            value={elem.itemCode}>{elem.itemCode} - {elem.name}</MenuItem>
+                                                            value={elem._id}>{elem.name}</MenuItem>
                                                     ))
                                                 )
                                             }
                                         </Select>
                                     </FormControl>
 
-                                    {form?.itemId !== '' && (
-                                        <React.Fragment>
-                                            <span>Dados da Compra</span>
+                                    <DateInput
+                                        variant='outlined'
+                                        label='Data da Compra*'
+                                        disableFuture={true}
+                                        selectedDate={form?.purchasedIn}
+                                        valueCallback={(newDate) => setForm({ ...form, purchasedIn: newDate })}
+                                    />
+                                </Box>
 
-                                            <Box
-                                                width={'100%'}
-                                                display={'flex'}
-                                                gap={'10px'}
-                                                flexDirection={'row'}
-                                            >
-                                                <FormControl variant="outlined">
-                                                    <InputLabel id="select-outlined-label-item-options">Fornecedor</InputLabel>
-                                                    <Select
-                                                        required
-                                                        labelId="select-outlined-label-supplier-options"
-                                                        disabled={!isAdm && !materialPage.Creator}
-                                                        value={form?.supplierId}
-                                                        onChange={(e) => {
-                                                            setForm({ ...form, supplierId: e.target.value })
-                                                        }}
-                                                        label="Fornecedor"
-                                                    >
-                                                        {
-                                                            supplierOptions?.length > 0 && (
-                                                                supplierOptions?.map(elem => (
-                                                                    <MenuItem
-                                                                        value={elem._id}>{elem.name}</MenuItem>
-                                                                ))
-                                                            )
-                                                        }
-                                                    </Select>
-                                                </FormControl>
+                                <Box
+                                    width={'100%'}
+                                    display={'flex'}
+                                    gap={'10px'}
+                                    flexDirection={'row'}
+                                >
+                                    <TextField
+                                        required
+                                        id="outlined-required-totalCost"
+                                        label="Custo Total"
+                                        placeholder="informa o valor total da compra"
+                                        value={form.totalCost}
+                                        onChange={(e) => {
+                                            setForm({ ...form, totalCost: e.target.value.replace(/[^\d.,]/g, '') })
+                                        }}
+                                    />
 
-                                                <DateInput
-                                                    variant='outlined'
-                                                    label='Data da Compra*'
-                                                    disableFuture={true}
-                                                    selectedDate={form?.purchasedIn}
-                                                    valueCallback={(newDate) => setForm({ ...form, purchasedIn: newDate })}
-                                                />
-                                            </Box>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="outlined-required-quantity"
+                                        label="Quantidade Comprada"
+                                        placeholder="informe a quantidade comprada"
+                                        value={form.quantity}
+                                        onChange={(e) => {
+                                            setForm({ ...form, quantity: getOnlyNumber(e.target.value) })
+                                        }}
+                                    />
 
-                                            <Box
-                                                width={'100%'}
-                                                display={'flex'}
-                                                gap={'10px'}
-                                                flexDirection={'row'}
-                                            >
-                                                <TextField
-                                                    required
-                                                    id="outlined-required-totalCost"
-                                                    label="Custo Total"
-                                                    placeholder="informa o valor total da compra"
-                                                    value={form.totalCost}
-                                                    onChange={(e) => {
-                                                        setForm({ ...form, totalCost: e.target.value.replace(/[^\d.,]/g, '') })
-                                                    }}
-                                                />
+                                    <FormControl variant="outlined">
+                                        <InputLabel id="select-outlined-required-type">Tipo</InputLabel>
+                                        <Select
+                                            id="outlined-required-type"
+                                            value={form.type}
+                                            onChange={(e) => {
+                                                setForm({ ...form, type: e.target.value, })
+                                            }}
+                                            label="Tipo"
+                                        >
+                                            <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
+                                            {
+                                                types.length > 0 && (
+                                                    types.map(elem => (
+                                                        <MenuItem value={elem}>{elem}</MenuItem>
+                                                    ))
+                                                )
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </Box>
 
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    id="outlined-required-quantity"
-                                                    label="Quantidade Comprada"
-                                                    placeholder="informe a quantidade comprada"
-                                                    value={form.quantity}
-                                                    onChange={(e) => {
-                                                        setForm({ ...form, quantity: getOnlyNumber(e.target.value) })
-                                                    }}
-                                                />
+                                <Box
+                                    width={'100%'}
+                                    display={'flex'}
+                                    gap={'10px'}
+                                    flexDirection={'row'}
+                                >
+                                    <TextField
+                                        disabled
+                                        id="outlined-required-totalCost"
+                                        label="Custo Por Unidade"
+                                        value={calculateCostPerItem()}
+                                    />
 
-                                                <FormControl variant="outlined">
-                                                    <InputLabel id="select-outlined-required-type">Tipo</InputLabel>
-                                                    <Select
-                                                        id="outlined-required-type"
-                                                        value={form.type}
-                                                        onChange={(e) => {
-                                                            setForm({ ...form, type: e.target.value, })
-                                                        }}
-                                                        label="Tipo"
-                                                    >
-                                                        <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
-                                                        {
-                                                            types.length > 0 && (
-                                                                types.map(elem => (
-                                                                    <MenuItem value={elem}>{elem}</MenuItem>
-                                                                ))
-                                                            )
-                                                        }
-                                                    </Select>
-                                                </FormControl>
-                                            </Box>
+                                    <TextField
+                                        required
+                                        id="outlined-required-ref-quantity"
+                                        label="Quantidade de Referência"
+                                        placeholder="informe a quantidade de referência"
+                                        value={form.quantityReference}
+                                        onChange={(e) => {
+                                            setForm({ ...form, quantityReference: getOnlyNumber(e.target.value) })
+                                        }}
+                                    />
 
-                                            <Box
-                                                width={'100%'}
-                                                display={'flex'}
-                                                gap={'10px'}
-                                                flexDirection={'row'}
-                                            >
-                                                <TextField
-                                                    disabled
-                                                    id="outlined-required-totalCost"
-                                                    label="Custo Por Unidade"
-                                                    value={calculateCostPerItem()}
-                                                />
-
-                                                <TextField
-                                                    required
-                                                    id="outlined-required-ref-quantity"
-                                                    label="Quantidade de Referência"
-                                                    placeholder="informe a quantidade de referência"
-                                                    value={form.quantityReference}
-                                                    onChange={(e) => {
-                                                        setForm({ ...form, quantityReference: getOnlyNumber(e.target.value) })
-                                                    }}
-                                                />
-
-                                                <TextField
-                                                    disabled
-                                                    id="outlined-required-typereference"
-                                                    label="Tipo de Referência"
-                                                    value={getReferenceType()}
-                                                />
-                                            </Box>
+                                    <TextField
+                                        disabled
+                                        id="outlined-required-typereference"
+                                        label="Tipo de Referência"
+                                        value={getReferenceType()}
+                                    />
+                                </Box>
 
 
-                                            <Box
-                                                width={'100%'}
-                                                display={'flex'}
-                                                gap={'10px'}
-                                                flexDirection={'row'}
-                                            >
-                                                <TextField
-                                                    fullWidth={true}
-                                                    variant='outlined'
-                                                    required
-                                                    id="standard-required-observation"
-                                                    label="Observações"
-                                                    placeholder="observações"
-                                                    multiline
-                                                    maxRows={6}
-                                                    value={form?.observations}
-                                                    onChange={(e) => {
-                                                        setForm({ ...form, observations: e.target.value })
-                                                    }}
-                                                />
-                                            </Box>
-                                        </React.Fragment>
-                                    )}
+                                <Box
+                                    width={'100%'}
+                                    display={'flex'}
+                                    gap={'10px'}
+                                    flexDirection={'row'}
+                                >
+                                    <TextField
+                                        fullWidth={true}
+                                        variant='outlined'
+                                        required
+                                        id="standard-required-observation"
+                                        label="Observações"
+                                        placeholder="observações"
+                                        multiline
+                                        maxRows={6}
+                                        value={form?.observations}
+                                        onChange={(e) => {
+                                            setForm({ ...form, observations: e.target.value })
+                                        }}
+                                    />
+                                </Box>
+                            </React.Fragment>
 
-                                </React.Fragment>
-                            }
                         </CustomModalBody>
 
                         <CustomModalFooter>

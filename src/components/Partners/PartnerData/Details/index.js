@@ -36,11 +36,12 @@ export const PartnerDetails = ({ handleName = () => String }) => {
 
     async function updatePartner() {
         setDisableButton(true)
+        console.log(form)
 
         const response = await api.UpdatePartner({
             ...form,
             type: form?.document?.replace(/\D/g, '').length === 14 ? 'PJ' : 'PF',
-            categories: form?.categories.map(category => (category.value)).join(";")
+            categories: Array.isArray(form?.categories) ? form?.categories.map(category => (category.value)).join(";") : form?.categories
         })
 
         if (response.success) {

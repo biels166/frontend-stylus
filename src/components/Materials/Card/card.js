@@ -88,22 +88,27 @@ export const MaterialCard = ({ material }) => {
             Lote da Compra: <span>{material.batch}</span>
           </Typography>
         </Grid>
-        <Grid item xs={3} lg={3}>
+        <Grid item xs={6} lg={6}>
           <Typography>
-            Qtd do Lote: <span>{batch?.quantity}</span>
+            Qtd do Lote: <span>{batch?.total}</span>
           </Typography>
         </Grid>
-        <Grid item xs={3} lg={3}>
+        <Grid item xs={6} lg={6}>
           <Typography>
             Qtd do Lote em Reserva: <span>{batch?.reserved}</span>
           </Typography>
         </Grid>
-        <Grid item xs={3} lg={3}>
+        <Grid item xs={6} lg={6}>
+          <Typography>
+            Qtd do Lote em Utilização: <span>{batch?.using}</span>
+          </Typography>
+        </Grid>
+        <Grid item xs={6} lg={6}>
           <Typography>
             Qtd do Lote já Utilizada: <span>{batch?.consumed}</span>
           </Typography>
         </Grid>
-        <Grid item xs={3} lg={3}>
+        <Grid item xs={6} lg={6}>
           <Typography>
             Qtd do Lote Disponível: <span>{batch?.total}</span>
           </Typography>

@@ -1129,10 +1129,12 @@ api.GetBatch = async (batchCode) => {
         })
 }
 
-api.ListBatchesOptions = async () => {
+api.ListBatchesOptions = async (filter) => {
     ConfigureHeader()
 
-    return await api.post('batch/options')
+    const body = {itemCode: filter}
+
+    return await api.post('batch/options', body)
         .then(response => {
             return {
                 success: true,
@@ -1154,10 +1156,12 @@ api.ListBatchesOptions = async () => {
 //#endregion
 
 //#region StockController
-api.ListStockControl = async () => {
+api.ListStockControl = async (filter, pageNumber, rowsPage) => {
     ConfigureHeader()
 
-    return await api.post('stockControl/listStockControl')
+    const body = {...filter, pageNumber: pageNumber-1, rowsPage}
+
+    return await api.post('stockControl/listStockControl', body)
         .then(response => {
             return {
                 success: true,

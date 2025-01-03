@@ -19,7 +19,7 @@ export const CustomModalPaper = styled(Paper)({
     left: '50%',
     transform: 'translate(-50%, -50%)',
     minWidth: '350px',
-    height: '180px',
+    height: 'auto',
     marginTop: '10px',
     backgroundColor: '#FFFFFF',
     border: '2px solid #003C73',

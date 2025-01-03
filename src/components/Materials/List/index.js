@@ -28,12 +28,15 @@ export const MaterialList = () => {
 
     const defaultFilter = {
         itemId: itemId,
+        supplierId: '',
+        batch: '',
     }
     const [filter, setFilter] = useState(defaultFilter)
-    
+
     const [itensPerPage, setItensPerPage] = useState(5)
     const [currentPage, setCurrentPage] = useState(1)
-    const [optionsType, setOptionsType] = useState([])
+    const [supplierOptions, setSupplierOptions] = useState([])
+    const [batchOptions, setBatchOptions] = useState([])
     const [optionsMaterialCode, setOptionsMaterialCode] = useState([])
     const [responseMaterialList, setResponseMaterialList] = useState({})
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
@@ -84,21 +87,20 @@ export const MaterialList = () => {
         setOpenToast(!response.success)
     }
 
-    async function getOptions() {
-        setLoadingList(true)
+    async function getSupplierOptions(categoryCode) {
+        const response = await api.GetSupplierOptions(categoryCode)
+        setSupplierOptions(response.partners)
+    }
 
-        const types = await api.GetMaterialTypeOptions()
-        setOptionsType(types.options)
-
-        const materialCodes = await api.GetMaterialCodeOptions()
-        setOptionsMaterialCode(materialCodes.options)
-
-        setLoadingList(false)
+    async function listBatchesOptions(itemCode) {
+        const response = await api.ListBatchesOptions(itemCode)
+        setBatchOptions(response.batch)
     }
 
     useEffect(() => {
         paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
-        getOptions()
+        listBatchesOptions(dataFromStockPage.itemCode)
+        getSupplierOptions(dataFromStockPage.categoryCode)
     }, [])
 
 
@@ -112,34 +114,26 @@ export const MaterialList = () => {
 
             <CustomPaper>
                 <CustomHeader>
-                    {
-                        isAdm && (
+
                             <SearchField>
-                                <TextField
-                                    id="outlined-required-materialNAme"
-                                    label="Material"
-                                    placeholder="digite o material"
-                                    value={filter?.material}
-                                    onChange={(e) => {
-                                        setFilter({ ...filter, material: e.target.value })
-                                    }}
-                                />
-
                                 <FormControl variant="outlined">
-                                    <InputLabel id="select-outlined-label-codemat">Código do Material</InputLabel>
+                                    <InputLabel id="select-outlined-label-item-options">Fornecedor</InputLabel>
                                     <Select
-                                        labelId="select-outlined-label-codemat"
-                                        value={filter?.materialCode}
+                                        required
+                                        labelId="select-outlined-label-supplier-options"
+                                        disabled={!isAdm && !materialPage.Creator}
+                                        value={filter?.supplierId}
                                         onChange={(e) => {
-                                            setFilter({ ...filter, materialCode: e.target.value })
+                                            setFilter({ ...filter, supplierId: e.target.value })
                                         }}
-                                        label="Código do Material"
+                                        label="Fornecedor"
                                     >
-                                        <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
+                                        <MenuItem value={''}>Selecionar</MenuItem>
                                         {
-                                            optionsMaterialCode.length > 0 && (
-                                                optionsMaterialCode.map(elem => (
-                                                    <MenuItem value={elem}>{elem}</MenuItem>
+                                            supplierOptions?.length > 0 && (
+                                                supplierOptions?.map(elem => (
+                                                    <MenuItem
+                                                        value={elem._id}>{elem.name}</MenuItem>
                                                 ))
                                             )
                                         }
@@ -147,26 +141,28 @@ export const MaterialList = () => {
                                 </FormControl>
 
                                 <FormControl variant="outlined">
-                                    <InputLabel id="select-outlined-label-type">Tipo</InputLabel>
+                                    <InputLabel id="select-outlined-label-batch-options">Lotes</InputLabel>
                                     <Select
-                                        labelId="select-outlined-label-type"
-                                        value={filter?.type}
+                                        required
+                                        labelId="select-outlined-label-batch-options"
+                                        disabled={!isAdm && !materialPage.Viewer}
+                                        value={filter?.batch}
                                         onChange={(e) => {
-                                            setFilter({ ...filter, type: e.target.value })
+                                            setFilter({ ...filter, batch: e.target.value })
                                         }}
-                                        label="Tipo"
+                                        label="Lotes"
                                     >
-                                        <MenuItem value={""} selected><en>Selecionar</en></MenuItem>
+                                        <MenuItem value={''}>Selecionar</MenuItem>
                                         {
-                                            optionsType.length > 0 && (
-                                                optionsType.map(elem => (
-                                                    <MenuItem value={elem}>{elem}</MenuItem>
+                                            batchOptions?.length > 0 && (
+                                                batchOptions?.map(elem => (
+                                                    <MenuItem
+                                                        value={elem.batch}>{elem.batch}</MenuItem>
                                                 ))
                                             )
                                         }
                                     </Select>
                                 </FormControl>
-
                                 <IconButtons src={searchIcon}
                                     onClick={() => {
                                         paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
@@ -175,18 +171,15 @@ export const MaterialList = () => {
 
                                 <ClearButton
                                     onClick={() => {
-                                        setFilter(null)
+                                        setFilter(defaultFilter)
                                         setCurrentPage(1)
-                                        paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
+                                        paginatedMaterialListByFilter(defaultFilter, 1, itensPerPage)
                                     }
                                     }>
                                     Limpar
                                 </ClearButton>
 
                             </SearchField>
-                        )
-                    }
-
 
                     {
                         (isAdm || materialPage.Creator) && (
@@ -213,7 +206,7 @@ export const MaterialList = () => {
                                             handleOnChange={(newValue) => setItensPerPage(newValue)}
                                             handleOnClick={() => {
                                                 setCurrentPage(1)
-                                                paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
+                                                paginatedMaterialListByFilter(filter, 1, itensPerPage)
                                             }}
                                         />
 
@@ -247,6 +240,7 @@ export const MaterialList = () => {
             </CustomPaper>
 
             <ModalAddMaterial
+                stockData={dataFromStockPage}
                 open={openAddModal}
                 handleClose={handleCloseAddModal}
                 handleReloadPage={(reload) => { handleReloadPage(reload) }}

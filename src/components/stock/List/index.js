@@ -22,17 +22,15 @@ import { ModalAddMaterial } from '../ModalAddMaterial'
 
 export const StockList = () => {
     const defaultFilter = {
-        batch: '', itemId: ''
+       itemId: ''
     }
     const [filter, setFilter] = useState(defaultFilter)
-    const [itensPerPage, setItensPerPage] = useState(5)
+    const [itensPerPage, setItensPerPage] = useState(10)
     const [currentPage, setCurrentPage] = useState(1)
     const [responseStockList, setResponseStockList] = useState({})
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
     const [loadingList, setLoadingList] = useState(false)
     const [openToast, setOpenToast] = useState(false)
-    const [supplierOptions, setSupplierOptions] = useState([])
-    const [batchOptions, setBatchOptions] = useState([])
     const [itensOptions, setItensOptions] = useState([])
     const [openAddModal, setOpenAddModal] = useState(false)
 
@@ -55,7 +53,7 @@ export const StockList = () => {
     async function listStockControl(filter, pageNumber, rowsPage) {
         setLoadingList(true)
 
-        const response = await api.ListStockControl()
+        const response = await api.ListStockControl(filter, pageNumber, rowsPage)
 
         console.log(response)
 
@@ -81,27 +79,19 @@ export const StockList = () => {
         setOpenToast(!response.success)
     }
 
-    //Sera usado nos materiais
-    async function getSupplierOptions(categoryCode) {
-        const response = await api.GetSupplierOptions(categoryCode)
-        setSupplierOptions(response.partners)
-    }
-
     async function getAllSupplierItens() {
         const response = await api.GetAllSupplierItens()
         setItensOptions(response.itens)
     }
 
-    async function listBatchesOptions() {
-        const response = await api.ListBatchesOptions()
-        setBatchOptions(response.batch)
-    }
-
     useEffect(() => {
         listStockControl(filter, 1, itensPerPage)
         getAllSupplierItens()
-        listBatchesOptions()
     }, [])
+
+    useEffect(() => {
+        console.log('filter', filter)
+    }, [filter])
 
     return (
         <React.Fragment>
@@ -128,34 +118,12 @@ export const StockList = () => {
                                         }}
                                         label="Item da Categoria"
                                     >
+                                        <MenuItem value={''}>Selecionar</MenuItem>
                                         {
                                             itensOptions?.length > 0 && (
                                                 itensOptions?.map(elem => (
                                                     <MenuItem
                                                         value={elem.itemCode}>{elem.itemCode} - {elem.name}</MenuItem>
-                                                ))
-                                            )
-                                        }
-                                    </Select>
-                                </FormControl>
-
-                                <FormControl variant="outlined">
-                                    <InputLabel id="select-outlined-label-batch-options">Lotes</InputLabel>
-                                    <Select
-                                        required
-                                        labelId="select-outlined-label-batch-options"
-                                        disabled={!isAdm && !materialPage.Viewer}
-                                        value={filter?.batch}
-                                        onChange={(e) => {
-                                            setFilter({ ...filter, batch: e.target.value })
-                                        }}
-                                        label="Lotes"
-                                    >
-                                        {
-                                            batchOptions?.length > 0 && (
-                                                batchOptions?.map(elem => (
-                                                    <MenuItem
-                                                        value={elem.batch}>{elem.batch}</MenuItem>
                                                 ))
                                             )
                                         }
