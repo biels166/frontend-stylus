@@ -222,26 +222,20 @@ export const Next = styled("button")({
 });
 
 export const Previous = styled("button")({
-    backgroundColor: '#FFF',
-    boxShadow: '0.5px 0.5px 1px grey',
+    backgroundColor: '#003C73',
     minHeight: '40px',
     width: '100px',
     borderRadius: '4px',
     borderWidth: '0px',
-    WebkitTextFillColor: '#003C73',
+    WebkitTextFillColor: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
     cursor: 'pointer',
     margin: 'auto 0px auto 0px',
-    '&:hover': {
-        backgroundColor: '#FFFFFF',
-        boxShadow: '2px 2px 5px grey',
-        WebkitTextFillColor: '#005F89'
-    },
     '&:hover:not(:disabled)': {
-        backgroundColor: '#DCDCDC',
+        backgroundColor: '#005F89',
         boxShadow: '2px 2px 5px grey',
-        WebkitTextFillColor: '#005F89'
+        WebkitTextFillColor: '#DCDCDC'
     },
     '&:disabled': {
         backgroundColor: '#DCDCDC',
