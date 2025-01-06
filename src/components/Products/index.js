@@ -25,6 +25,7 @@ import api from '../../services/api'
 import { Alert, Box, MenuItem, Modal, Pagination, Paper, Snackbar, TextField, Typography } from '@mui/material'
 import { UFS } from '../../constants/UFS'
 import ProductTabel from './tabel'
+import { ModalAddProduct } from './ModalAddProduct'
 
 export const ProductsAndServices = () => {
     const ITENS_PER_PERGE = 2
@@ -90,8 +91,11 @@ export const ProductsAndServices = () => {
                     setLoadingList(false)
 
                     let rows = []
-                    response.data.forEach(i => {
-                        rows.push({ id: i._id, _id: i._id, product: i.product, value: i.value, obs: i.obs })
+                    response.data.forEach(item => {
+                        rows.push({ 
+                            ...item,
+                            type: item.isProduct === true ? 'PRODUTO' : 'SERVIÇO'
+                        })
                     })
 
                     let aux = {
@@ -100,6 +104,7 @@ export const ProductsAndServices = () => {
                             { field: 'product', headerName: 'PRODUTO' },
                             { field: 'value', headerName: 'VALOR' },
                             { field: 'obs', headerName: 'OBSERVAÇÕES' },
+                            { field: 'type', headerName: 'TIPO' },
                         ]
                     }
                     setInitialData(aux)
@@ -131,8 +136,11 @@ export const ProductsAndServices = () => {
                     setLoadingList(false)
 
                     let rows = []
-                    response.data.forEach(i => {
-                        rows.push({ id: i._id, _id: i._id, product: i.product, value: i.value, obs: i.obs })
+                    response.data.forEach(item => {
+                        rows.push({ 
+                            ...item,
+                            type: item.isProduct === true ? 'PRODUTO' : 'SERVIÇO'
+                        })
                     })
 
                     let aux = {
@@ -141,6 +149,7 @@ export const ProductsAndServices = () => {
                             { field: 'product', headerName: 'PRODUTO' },
                             { field: 'value', headerName: 'VALOR' },
                             { field: 'obs', headerName: 'OBSERVAÇÕES' },
+                            { field: 'type', headerName: 'TIPO' },
                         ]
                     }
                     setInitialData(aux)
@@ -154,40 +163,12 @@ export const ProductsAndServices = () => {
             })
     }
 
-    async function registerProduct() {
-        let body = {
-            product: `${productName}`,
-            value: `${productValue.replace(",",".")}`,
-            obs: `${obs}`,
-        }
-
-        await api.post(`/product`, body)
-            .then(
-                response => {
-                    setRegisterStatus('success')
-                    setRegisterInfo('Produto cadastrado com sucesso')
-                    setOpenToast(true)
-                    list(1)
-                    setOpenAddModal(false)
-                    setDisableButton(false)
-                    setProductName('')
-                    setObs('')
-                    setProductValue('')
-                }
-            ).catch(erro => {
-                setDisableButton(false)
-                setRegisterStatus('error')
-                setRegisterInfo(erro.response.data.error)
-                setOpenToast(true)
-            })
-    }
-
     useEffect(() => {
         list(1)
     }, [])
 
     return (
-        <>
+        <React.Fragment>
             <CustomTitlePaper>
                 <Typography>
                     Produtos e Serviços
@@ -235,107 +216,33 @@ export const ProductsAndServices = () => {
                 {
                     loadingList ?
                         <ListSkeleton /> :
-                        <>
+                        <React.Fragment>
                             {
-    totalItens > 0 && initialData.rows?.length > 0 && initialData.columns?.length > 0 ? (
-        <Box 
-                                    display={'flex'} 
-                                    marginTop={'10 px'}>
-                                        <ProductTabel 
-                                        initialData={initialData}
-                                        handleReloadPage={handleReloadPage}
+                                totalItens > 0 && initialData.rows?.length > 0 && initialData.columns?.length > 0 ? (
+                                    <Box
+                                        display={'flex'}
+                                        marginTop={'10 px'}>
+                                        <ProductTabel
+                                            initialData={initialData}
+                                            handleReloadPage={handleReloadPage}
                                         />
                                     </Box>
-    )
+                                )
                                     : <CustomResponse>
                                         <Typography>
                                             Produto não encontrado. Verifique o nome informado e tente novamente
                                         </Typography>
                                     </CustomResponse>
                             }
-                        </>
+                        </React.Fragment>
                 }
             </CustomPaper>
 
-            <div >
-                <Modal
-                    open={openAddModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <CustomModalPaper>
-                        <CustomModalHeader>
-                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                Cadastrar Novo Produto
-                            </Typography>
-
-                            <CloseIcon src={closeIcon}
-                                onClick={handleCloseAddModal}
-                            />
-                        </CustomModalHeader>
-
-                        <Box>
-                            <CustomModalBody>
-                                <Box
-                                    width={'100%'}
-                                    display={'flex'}
-                                    flexDirection={'row'}
-                                >
-                                    <TextField
-                                        required
-                                        id="outlined-required-name"
-                                        label="Produto"
-                                        placeholder="digite o nome do produto"
-                                        value={productName}
-                                        onChange={(e) => {
-                                            let newValue = e.target.value
-                                            setProductName(newValue)
-                                        }}
-                                    />
-
-                                    <TextField
-                                        fullWidth
-                                        required
-                                        id="outlined-required-value"
-                                        label="Valor"
-                                        placeholder="digite o valor do produto"
-                                        value={productValue}
-                                        onChange={(e) => {
-                                            let newValue = e.target.value.replace(/[^\d.,]/g, '')
-                                            setProductValue(newValue)
-                                        }}
-                                    />
-
-                                    <TextField
-                                        required
-                                        id="outlined-required-obs"
-                                        label="Observações"
-                                        placeholder="digite as observações"
-                                        value={obs}
-                                        onChange={(e) => {
-                                            let newValue = e.target.value
-                                            setObs(newValue)
-                                        }}
-                                    />
-                                </Box>
-                            </CustomModalBody>
-
-                            <CustomModalFooter>
-                                <RegisterNewUserButton
-                                    disabled={disableButton}
-                                    onClick={() => {
-                                        setDisableButton(true)
-                                        registerProduct()
-                                    }}
-                                >
-                                    Salvar
-                                </RegisterNewUserButton>
-                            </CustomModalFooter>
-                        </Box>
-
-                    </CustomModalPaper>
-                </Modal>
-            </div>
+            <ModalAddProduct
+                open={openAddModal}
+                handleClose={handleCloseAddModal}
+                handleReloadPage={(reload) => handleReloadPage(reload)}
+            />
 
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -352,6 +259,6 @@ export const ProductsAndServices = () => {
                     {registerInfo}
                 </Alert>
             </Snackbar>
-        </>
+        </React.Fragment>
     )
 }

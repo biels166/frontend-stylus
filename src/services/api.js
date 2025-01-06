@@ -327,6 +327,26 @@ api.PaginatedClientListByName = async (name, pageNumber, rowsPage) => {
         })
 }
 
+api.ListAllClients = async () => {
+    ConfigureHeader()
+
+    return await api.post('/client/listAllClients')
+        .then(response => {
+            return {
+                success: true,
+                clients: response.data.clients
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: true,
+                clients: []
+            }
+        })
+
+}
+
 api.CreateClient = async (clientData) => {
     ConfigureHeader()
 
@@ -428,7 +448,7 @@ api.PaginatedPartnerList = async (filter, pageNumber, rowsPage) => {
     const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
 
     console.log('body PaginatedPartnerList', body)
-    
+
     return await api.post('/partner/list', body)
         .then(response => {
             return {
@@ -457,6 +477,33 @@ api.GetSupplierOptions = async (category) => {
     ConfigureHeader()
 
     return await api.get(`/partner/suppliers/${category}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                partners: response.data.partners
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                partners: []
+            }
+        })
+}
+
+api.GetOutsourcedOptions = async (category) => {
+    ConfigureHeader()
+
+    return await api.get(`/partner/outsourced/${category}`)
         .then(response => {
             return {
                 success: true,
@@ -574,11 +621,11 @@ api.DeletePartner = async (partnerId) => {
         })
 }
 
-api.PaginatedOfferedList = async (partnerId, pageNumber, rowsPage) => {
+api.PaginatedOfferedList = async (filter, pageNumber, rowsPage) => {
     ConfigureHeader()
 
     const body = {
-        partnerId, pageNumber: pageNumber - 1, rowsPage
+        ...filter, pageNumber: pageNumber - 1, rowsPage
     }
 
     return await api.post('/partner/offered/list', body)
@@ -779,7 +826,7 @@ api.DeleteContact = async (contactId) => {
         })
 }
 //#endregion
- 
+
 //#region NFController
 api.PaginatedNFListByClient = async (clientId, pageNumber, rowsPage) => {
     ConfigureHeader()
@@ -1101,7 +1148,34 @@ api.GetAllSupplierItens = async () => {
                 itens: []
             }
         })
-}
+} 
+
+api.GetAllOutsourcedItens = async () => {
+    ConfigureHeader()
+
+    return await api.get('/category/listAllOutsourcedItens')
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                itens: response.data.itens
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                itens: []
+            }
+        })
+} 
 
 //#endregion
 
@@ -1132,7 +1206,7 @@ api.GetBatch = async (batchCode) => {
 api.ListBatchesOptions = async (filter) => {
     ConfigureHeader()
 
-    const body = {itemCode: filter}
+    const body = { itemCode: filter }
 
     return await api.post('batch/options', body)
         .then(response => {
@@ -1159,7 +1233,7 @@ api.ListBatchesOptions = async (filter) => {
 api.ListStockControl = async (filter, pageNumber, rowsPage) => {
     ConfigureHeader()
 
-    const body = {...filter, pageNumber: pageNumber-1, rowsPage}
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
 
     return await api.post('stockControl/listStockControl', body)
         .then(response => {
@@ -1328,4 +1402,73 @@ api.GetMaterialTypeOptions = async () => {
         })
 }
 //#endregion
-export default api 
+
+//#region ProductController
+api.CreateProduct = async (productData) => {
+    ConfigureHeader()
+
+    const body = { ...productData }
+    return await api.post('/product', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                product: response.data.product
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                product: null
+            }
+        })
+}
+
+api.ListAllProducts = async () => {
+    ConfigureHeader()
+
+    return await api.post('/product/listAllProducts')
+        .then(response => {
+            console.log(response.data)
+            return {
+                success: true,
+                products: response.data.products
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: true,
+                products: []
+            }
+        })
+
+}
+
+api.ListAllServices = async () => {
+    ConfigureHeader()
+
+    return await api.post('/product/listAllServices')
+        .then(response => {
+            console.log(response.data)
+            return {
+                success: true,
+                services: response.data.services
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: true,
+                services: []
+            }
+        })
+
+}
+//#endregion
+
+export default api  

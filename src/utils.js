@@ -52,6 +52,11 @@ export const formatDate = (date = new Date()) => {
     return dt.toLocaleDateString('pt-BR')
 }
 
+export const formatDateFromFront = (date = new Date()) => {
+    let dt = new Date(date)
+    return dt.toLocaleDateString('pt-BR')
+}
+
 export const formatValue = (value = 0) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }

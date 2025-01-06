@@ -57,7 +57,10 @@ export const OfferedList = () => {
     async function paginatedOfferedList(partnerId, pageNumber, rowsPage, sequenceRequest = false) {
         setLoadingList(true)
 
-        const response = await api.PaginatedOfferedList(partnerId, pageNumber, rowsPage)
+        let filter = { partnerId: partnerId }
+
+        const response = await api.PaginatedOfferedList(filter, pageNumber, rowsPage)
+
         if (response.success) {
             setCurrentPage(pageNumber)
             setResponseOfferedList({

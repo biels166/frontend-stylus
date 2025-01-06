@@ -20,7 +20,7 @@ export const CategoryForm = () => {
     const [openToast, setOpenToast] = useState(false)
     const [disableButton, setDisableButton] = useState(false)
     const { isAdm, materialPage } = useAuth()
-    const filterOptions = [
+    const options = [
         {
             icon: <CustomSupplierIcon />,
             value: 'Materiais'
@@ -100,7 +100,7 @@ export const CategoryForm = () => {
                                         '--ListItem-minHeight': '3.45rem'
                                     }}
                                 >
-                                    {filterOptions.map(item => (
+                                    {options.map(item => (
                                         <ListItem
                                             key={item.value}
                                             variant="outlined"

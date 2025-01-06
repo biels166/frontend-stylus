@@ -56,8 +56,14 @@ export default function ProductTable({ initialData, handleReloadPage }) {
       {
         field: 'obs',
         headerName: 'OBSERVAÇÕES',
-        width: 500,
+        width: 400,
         editable: true,
+      },
+      {
+        field: 'type',
+        headerName: 'TIPO',
+        width: 120,
+        editable: false,
       },
       {
         field: 'actions',
@@ -122,6 +128,7 @@ export default function ProductTable({ initialData, handleReloadPage }) {
         product: `${row.product}`,
         value: `${row.value.toString().replace(",", ".")}`,
         obs: `${row.obs}`,
+        isProduct: row.type === 'PRODUTO'
       }
 
       await api.put(`/product/${row._id}`, body)
@@ -236,7 +243,7 @@ export default function ProductTable({ initialData, handleReloadPage }) {
 
   return (
     <>
-      <div style={{ width: '1201px' }}>
+      <div style={{ width: '1221px' }}>
         <div style={{ marginBottom: 8, display: 'flex', justifyContent: 'end' }}>
           <CancelButton
             disabled={!hasUnsavedRows || isSaving}

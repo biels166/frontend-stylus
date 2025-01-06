@@ -37,7 +37,7 @@ export const ModalAddMaterial = ({
 
     const { isAdm, materialPage } = useAuth()
 
-    const types = ['Milheiro', 'Rolo(s)', 'Pacote(s)', 'Galão(ões)', 'Pedaço(s)', 'Caixa(s)']
+    const types = ['Milheiro', 'Rolo(s)', 'Pacote(s)', 'Galão(ões)', 'Pedaço(s)', 'Caixa(s)', 'Unidade(s)']
 
     const referenceTypes = [
         { reference: 'Milheiro', value: 'Unidade(s)' },
@@ -45,7 +45,8 @@ export const ModalAddMaterial = ({
         { reference: 'Galão(ões)', value: 'Quilograma(s)' },
         { reference: 'Pacote(s)', value: 'Folha(s)' },
         { reference: 'Pedaço(s)', value: 'Unidade(s)' },
-        { reference: 'Caixa(s)', value: 'Unidade(s)' }
+        { reference: 'Caixa(s)', value: 'Unidade(s)' },
+        { reference: 'Unidade(s)', value: 'Unidade(s)' }
     ]
 
     const getReferenceType = useCallback(() => {
@@ -61,7 +62,6 @@ export const ModalAddMaterial = ({
     }, [form?.type])
 
     const calculateCostPerItem = useCallback(() => {
-        console.log('chamou calculateCostPerItem')
         const { totalCost, quantity, quantityReference, categoryId, type } = form
         let costPerItem = 0
 
@@ -105,6 +105,7 @@ export const ModalAddMaterial = ({
                     break;
 
                 case 'PAPELÃO':
+                case 'AGENDA':
                     costPerItem = totalCostValue / quantityValue
                     break;
 

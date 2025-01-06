@@ -22,6 +22,7 @@ import { TaskBoard } from '../../../views/TaskBoard'
 import { CategoryTabs } from '../../Category'
 import { PartnerList } from './../../Partners/List/index';
 import { StockList } from '../../stock/List'
+import { CreateQuotePage } from '../../Quotes/CreateQuote'
 
 export const NavErrors = () => {
     return [
@@ -174,7 +175,7 @@ export const NavItems = () => {
             name: 'Cotações',
             path: '/cotacoes',
             icon: CustomQuoteIcon,
-            element: <h1>Cotações</h1>,
+            element: <CreateQuotePage />,
             roles: [
                 process.env.REACT_APP_ADMINISTRADOR,
                 process.env.REACT_APP_VISUALIZAR_COTACAO
