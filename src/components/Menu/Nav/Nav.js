@@ -42,7 +42,7 @@ export const NavErrors = () => {
 }
 
 export const NavItems = () => {
-    const { isAdm, userPage, clientPage, partnerPage, productPage, materialPage, } = useAuth()
+    const { isAdm, userPage, clientPage, partnerPage, productPage, materialPage, quotePage } = useAuth()
     return [
         //Homa
         {
@@ -180,7 +180,7 @@ export const NavItems = () => {
                 process.env.REACT_APP_ADMINISTRADOR,
                 process.env.REACT_APP_VISUALIZAR_COTACAO
             ],
-            enable: isAdm,
+            enable: isAdm || quotePage.Viewer,
             show: true
         },
         //Ordens de Serviço
