@@ -303,9 +303,7 @@ export const CreateQuotePage = () => {
         if (deliveryRate > 0) totalWithRate = totalWithRate + deliveryRate
 
         const updateDraft = form.number && status === 'Em Rascunho'
-
-        //Todo > Ao consolidar integrar com a collection de lotes
-        //const consolidateDraft = form.number && status === 'Em Aprovação' 
+        const consolidateDraft = form.number && status === 'Em Aprovação'
 
         const body = {
             ...form,
@@ -316,7 +314,7 @@ export const CreateQuotePage = () => {
             discount: discount > 0 ? discount : 0,
         }
 
-        const response = updateDraft ? await api.UpdateOrConsolidateDraft(body)
+        const response = (updateDraft || consolidateDraft) ? await api.UpdateOrConsolidateDraft(body)
             : await api.SaveDraftOrCreateQuote(body)
 
         if (response.success) {
