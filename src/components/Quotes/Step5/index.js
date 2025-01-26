@@ -21,9 +21,11 @@ export const QuotePartnerService = ({
     const defaultForm = {
         quantity: '',
         itemCode: '',
+        service: '',
         item: {},
         value: '',
         outsourcedId: '',
+        outsourcedName: '',
         outsourced: {},
         refValue: formatValue(0)
     }
@@ -106,10 +108,12 @@ export const QuotePartnerService = ({
                                         disabled={!isAdm && !quotePage.Creator}
                                         value={form?.itemCode}
                                         onChange={(e) => {
+                                            let selected = outsourcedItensOptions.find(p => p.itemCode === e.target.value)
                                             setForm({
                                                 ...form,
                                                 itemCode: e.target.value,
-                                                item: outsourcedItensOptions.find(p => p.itemCode === form.itemCode)
+                                                item: selected,
+                                                service: selected.name                                                
                                             })
                                             getOutsourcedOptions(e.target.value.split(".")[0])
                                         }}
@@ -135,10 +139,12 @@ export const QuotePartnerService = ({
                                         disabled={(!isAdm && !quotePage.Creator) || outsourcedOptions.length === 0}
                                         value={form?.outsourcedId}
                                         onChange={(e) => {
+                                            let selected = outsourcedOptions.find(p => p._id === e.target.value)
                                             let newform = {
                                                 ...form,
                                                 outsourcedId: e.target.value,
-                                                outsourced: outsourcedOptions.find(p => p._id === e.target.value),
+                                                outsourced: selected,
+                                                outsourcedName: selected.name,
                                             }
 
                                             handleOnchangeOutsourced(newform)

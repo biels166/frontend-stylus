@@ -8,6 +8,7 @@ import { PageControl } from './../../components/PageControl/index';
 import api from '../../services/api';
 import { CustomToast } from '../../components/Toast';
 import searchIcon from '../../assets/search_icon.svg'
+import { CustomBackdrop } from '../../components/CustomBackrop';
 
 const Dictionary = () => {
     return (
@@ -148,6 +149,8 @@ export const TaskBoard = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomTitlePaper>
                 <Typography>
                     {user?.name?.split(' ')[0]}, aqui estão suas tarefas

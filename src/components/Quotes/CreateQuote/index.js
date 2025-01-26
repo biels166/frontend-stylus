@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import {
+    CreateQuote,
     CustomBody,
-    CustomPaginator,
     CustomPaper,
-    CustomResponse,
-    CustomStepIndicator,
     CustomTitlePaper,
-    IconButtons,
     Next,
     Previous,
-    SaveButton
+    SaveDraft
 } from './styles'
 import api from '../../../services/api'
 import { CustomToast } from '../../Toast'
@@ -22,28 +19,52 @@ import Typography, { typographyClasses } from '@mui/joy/Typography'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded'
 import EditOffIcon from '@mui/icons-material/EditOff'
-import { StepButton } from '@mui/joy'
 import { QuoteProduct } from '../Step2'
 import { QuoteService } from '../Step4'
 import { QuotePartnerService } from '../Step5'
 import { QuoteMaterials } from '../Step3'
 import { LastQuoteStep } from '../LastStep'
-import { DateInput } from './../../DateInput/index';
+import { DateInput } from './../../DateInput/index'
+import { ConfirmAction } from '../../ConfirmAction'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 export const CreateQuotePage = () => {
+    const params = useParams()
+    const number = params.number
+    const location = useLocation()
+    const quoteDraft = location.state
+    const formFromDrfat = {
+        ...quoteDraft,
+        clientId: quoteDraft?.client?._id,
+        deliveryDate: new Date(quoteDraft?.deliveryDate),
+    }
     const defaultForm = {
         deliveryDate: new Date(),
         clientId: '',
         client: {},
         productList: [],
-        materialList: [],
+        productsValue: 0,
         serviceList: [],
+        servicesValue: 0,
+        materialList: [],
+        materialsCost: 0,
         partnerServiceList: [],
+        partnerServicesCost: 0,
+        deliveryRate: '',
+        urgencyRate: '',
+        discount: '',
+        totalWithoutRate: 0,
+        totalWithRate: '',
+        status: '',
     }
 
-    const [form, setForm] = useState(defaultForm)
+    const initialForm = quoteDraft ? formFromDrfat : defaultForm
+
+    const navigate = useNavigate()
     const { isAdm, quotePage } = useAuth()
+    const [form, setForm] = useState(initialForm)
     const [openToast, setOpenToast] = useState(false)
+    const [openConfirm, setOpenConfirm] = useState(false)
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
     const [activeStep, setActiveStep] = useState(1)
     const [clientOptions, setClientOptions] = useState([])
@@ -51,21 +72,50 @@ export const CreateQuotePage = () => {
     const [serviceOptions, setServiceOptions] = useState([])
     const [materialItensOptions, setMaterialItensOptions] = useState([])
     const [outsourcedItensOptions, setOutsourcedItensOptions] = useState([])
+    const [disableButton, setDisableButton] = useState(false)
 
     const handleUpdateProductList = (newList) => {
-        setForm({ ...form, productList: newList })
+        let productsValue = newList?.reduce((accumulator, item) => accumulator + item.total, 0)
+
+        setForm({
+            ...form,
+            productList: newList,
+            productsValue,
+            totalWithoutRate: productsValue + form.servicesValue
+        })
     }
 
     const handleUpdateServiceList = (newList) => {
-        setForm({ ...form, serviceList: newList })
+        let servicesValue = newList?.reduce((accumulator, item) => accumulator + item.total, 0)
+
+        setForm({
+            ...form,
+            serviceList: newList,
+            servicesValue,
+            totalWithoutRate: form.productsValue + servicesValue
+        })
     }
 
     const handleUpdatePartnerServiceList = (newList) => {
-        setForm({ ...form, partnerServiceList: newList })
+        let partnerServicesCost = newList?.reduce((accumulator, item) => accumulator + item.totalCost, 0)
+
+        setForm({
+            ...form,
+            partnerServiceList: newList,
+            partnerServicesCost,
+            totalWithoutRate: form.productsValue + form.servicesValue + partnerServicesCost + form.materialsCost
+        })
     }
 
     const handleUpdateMaterialList = (newList) => {
-        setForm({ ...form, materialList: newList })
+        let materialsCost = newList?.reduce((accumulator, item) => accumulator + item.totalCost, 0)
+
+        setForm({
+            ...form,
+            materialList: newList,
+            materialsCost,
+            totalWithoutRate: form.productsValue + form.servicesValue + form.partnerServicesCost + materialsCost
+        })
     }
 
     const steperStyle = () => (theme) => ({
@@ -173,20 +223,30 @@ export const CreateQuotePage = () => {
         if (activeStep === 6)
             return true
 
-        if (activeStep === 1 && (!form?.clientId || form.deliveryDate.getFullYear() < 2000))
+        if (activeStep === 1 && (!form?.clientId || form.deliveryDate?.getFullYear() < 2000))
             return true
 
-        if (activeStep === 3 && form?.productList.length > 0 && form?.materialList.length === 0)
+        if (activeStep === 3 && form?.productList?.length > 0 && form?.materialList?.length === 0)
             return true
 
-        if (activeStep === 5 && form?.serviceList.length > 0 && form?.partnerServiceList.length === 0)
+        if (activeStep === 5 && form?.serviceList?.length > 0 && form?.partnerServiceList?.length === 0)
             return true
+    }
 
+    const handleConitionsToSubmit = () => {
+        let condition = form?.productList.length === 0 &&
+            form?.materialList.length === 0 &&
+            form?.serviceList.length === 0 &&
+            form?.partnerServiceList.length === 0
+
+        if (condition)
+            return true
     }
 
     useEffect(() => {
-        console.log('formulário de cotação', form)
-    }, [form])
+        setActiveStep(1)
+        setForm(initialForm)
+    }, [location])
 
     async function listAllClients() {
         const response = await api.ListAllClients()
@@ -212,6 +272,65 @@ export const CreateQuotePage = () => {
         const response = await api.GetAllOutsourcedItens()
         setOutsourcedItensOptions(response.itens)
     }
+
+    async function saveDraftOrCreateQuote(status = "") {
+        let deliveryRate = 0
+        let urgencyRate = 0
+        let discount = 0
+
+        try {
+            deliveryRate = parseFloat(form.deliveryRate)
+        } catch { }
+
+        try {
+            urgencyRate = parseFloat(form.urgencyRate) / 100
+        } catch { }
+
+        try {
+            discount = parseFloat(form.discount) / 100
+        } catch { }
+
+        let totalWithRate = form.totalWithoutRate
+
+        let totalRate = 0
+
+        if (urgencyRate > 0) totalRate += urgencyRate
+
+        if (discount > 0) totalRate -= discount
+
+        totalWithRate = totalWithRate * (1 + totalRate)
+
+        if (deliveryRate > 0) totalWithRate = totalWithRate + deliveryRate
+
+        const updateDraft = form.number && status === 'Em Rascunho'
+
+        //Todo > Ao consolidar integrar com a collection de lotes
+        //const consolidateDraft = form.number && status === 'Em Aprovação' 
+
+        const body = {
+            ...form,
+            status,
+            totalWithRate: totalWithRate,
+            deliveryRate: deliveryRate > 0 ? deliveryRate : 0,
+            urgencyRate: urgencyRate > 0 ? urgencyRate : 0,
+            discount: discount > 0 ? discount : 0,
+        }
+
+        const response = updateDraft ? await api.UpdateOrConsolidateDraft(body)
+            : await api.SaveDraftOrCreateQuote(body)
+
+        if (response.success) {
+            setTimeout(() => { navigate('/listagem-cotacao') }, 4000)
+        }
+
+        setInfoToCustomToast({
+            severity: response.status,
+            info: response.message,
+        })
+        setOpenToast(true)
+        setDisableButton(false)
+    }
+
 
     useEffect(() => {
         if (activeStep === 1) {
@@ -239,7 +358,7 @@ export const CreateQuotePage = () => {
         <React.Fragment>
             <CustomTitlePaper>
                 <Typography>
-                    Criar Nova Cotação
+                    {number ? `Continuar Rascunho ${number}` : 'Criar Nova Cotação'}
                 </Typography>
             </CustomTitlePaper>
 
@@ -482,35 +601,80 @@ export const CreateQuotePage = () => {
                         activeStep === 6 && (
                             <LastQuoteStep
                                 quote={form}
+                                cacheQuote={(quoteData) => { setForm(quoteData) }}
                             />
                         )
                     }
 
-                    <Box
-                        width={'100%'}
-                        alignSelf={'flex-end'}
-                        display={'flex'}
-                        justifyContent={'space-between'}
-                        paddingTop={'20px'}
-                        margin={'auto 0px 5px'}
-                    >
-                        <Previous
-                            disabled={activeStep === 1}
-                            onClick={() => setActiveStep(activeStep - 1)}
-                        >
-                            Anterior
-                        </Previous>
 
-                        <Next
-                            disabled={handleDisableNextButtonRules()}
-                            onClick={() => setActiveStep(activeStep + 1)}
-                        >
-                            Próximo
-                        </Next>
-                    </Box>
                 </React.Fragment>
             </CustomPaper>
 
+            <Box
+                width={'100%'}
+                alignSelf={'flex-end'}
+                display={'flex'}
+                justifyContent={'space-between'}
+                paddingTop={'20px'}
+                margin={'auto 0px 5px'}
+            >
+                <Previous
+                    disabled={activeStep === 1 || disableButton}
+                    onClick={() => setActiveStep(activeStep - 1)}
+                >
+                    Anterior
+                </Previous>
+
+                <Box>
+                    {
+                        activeStep > 1 && (
+                            <SaveDraft
+                                disabled={handleConitionsToSubmit() || disableButton}
+                                onClick={() => { setOpenConfirm(true) }}
+                            >
+                                Salvar Rascunho
+                            </SaveDraft>
+                        )
+                    }
+
+                    {
+                        activeStep === 6 && (
+                            <CreateQuote
+                                disabled={handleConitionsToSubmit() || disableButton}
+                                onClick={() => {
+                                    saveDraftOrCreateQuote("Em Aprovação")
+                                }}
+                            >
+                                Gerar Cotação
+                            </CreateQuote>
+                        )
+                    }
+                </Box>
+
+
+                <Next
+                    disabled={handleDisableNextButtonRules() || disableButton}
+                    onClick={() => setActiveStep(activeStep + 1)}
+                >
+                    Próximo
+                </Next>
+
+            </Box>
+
+            <ConfirmAction
+                open={openConfirm}
+                title={'Salvar Rascunho'}
+                text={'Ao salvar o rascunho, os materiais não serão reservados no estoque, somente após a geração da cotação. Deseja seguir ?'}
+                handleClose={() => { setOpenConfirm(false) }}
+                returnDecision={(decision) => {
+                    setOpenConfirm(false)
+
+                    if (decision) {
+                        saveDraftOrCreateQuote("Em Rascunho")
+                        console.log('salvamento de rascunho confirmado')
+                    }
+                }}
+            />
             <CustomToast
                 open={openToast}
                 severity={infoToCustomToast.severity}

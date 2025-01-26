@@ -17,6 +17,7 @@ import api from '../../../../../services/api'
 import { formatCellphone, formatPhone } from '../../../../../utils'
 import { useAuth } from '../../../../../context/AuthContext'
 import { PageControl } from '../../../../PageControl'
+import { CustomBackdrop } from '../../../../CustomBackrop'
 
 export const ContactsList = () => {
     const { partnerId } = useParams()
@@ -106,6 +107,8 @@ export const ContactsList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomPaper>
                 <CustomHeader>
                     <Typography id="title" variant="h6" component="h2">

@@ -21,7 +21,6 @@ export const CustomPaper = styled(Box)({
     margin: '0px 0px 10px',
     backgroundColor: '#E8EAED',
     borderBottomRadius: '80px',
-
 });
 
 export const CustomTitlePaper = styled(Box)({

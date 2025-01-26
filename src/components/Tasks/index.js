@@ -78,7 +78,6 @@ export default function TaskCard({ task, handleReloadPageList = () => Boolean })
   async function createOrUpdateTask() {
     setDisableButton(true)
 
-
     const response = task._id === null ? 
     await api.CreateTaskByUser(form) : await api.UpdateTask(form)
 

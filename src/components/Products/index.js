@@ -26,6 +26,7 @@ import { Alert, Box, MenuItem, Modal, Pagination, Paper, Snackbar, TextField, Ty
 import { UFS } from '../../constants/UFS'
 import ProductTabel from './tabel'
 import { ModalAddProduct } from './ModalAddProduct'
+import { CustomBackdrop } from '../CustomBackrop'
 
 export const ProductsAndServices = () => {
     const ITENS_PER_PERGE = 2
@@ -92,7 +93,7 @@ export const ProductsAndServices = () => {
 
                     let rows = []
                     response.data.forEach(item => {
-                        rows.push({ 
+                        rows.push({
                             ...item,
                             type: item.isProduct === true ? 'PRODUTO' : 'SERVIÇO'
                         })
@@ -137,7 +138,7 @@ export const ProductsAndServices = () => {
 
                     let rows = []
                     response.data.forEach(item => {
-                        rows.push({ 
+                        rows.push({
                             ...item,
                             type: item.isProduct === true ? 'PRODUTO' : 'SERVIÇO'
                         })
@@ -169,6 +170,8 @@ export const ProductsAndServices = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomTitlePaper>
                 <Typography>
                     Produtos e Serviços

@@ -18,6 +18,7 @@ import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/mate
 import { useAuth } from '../../../context/AuthContext'
 import { CustomToast } from '../../Toast'
 import { PageControl } from '../../PageControl'
+import { CustomBackdrop } from '../../CustomBackrop'
 
 export const ItensByCategoryList = () => {
     const defaultFilter = {
@@ -86,11 +87,13 @@ export const ItensByCategoryList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomPaper>
                 <CustomHeader>
                     <CustomHeader>
                         <Typography id="title" variant="h6" component="h2">
-                           Lista de Itens por Categoria
+                            Lista de Itens por Categoria
                         </Typography>
                     </CustomHeader>
 
@@ -159,7 +162,7 @@ export const ItensByCategoryList = () => {
                                             <CategoryCard
                                                 item={item}
                                                 key={item._id}
-                                                handleReloadPageList={(reload) => {handleReloadPage(reload)}}
+                                                handleReloadPageList={(reload) => { handleReloadPage(reload) }}
                                             />
                                         ))
                                         }

@@ -447,8 +447,6 @@ api.PaginatedPartnerList = async (filter, pageNumber, rowsPage) => {
 
     const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
 
-    console.log('body PaginatedPartnerList', body)
-
     return await api.post('/partner/list', body)
         .then(response => {
             return {
@@ -1148,7 +1146,7 @@ api.GetAllSupplierItens = async () => {
                 itens: []
             }
         })
-} 
+}
 
 api.GetAllOutsourcedItens = async () => {
     ConfigureHeader()
@@ -1175,7 +1173,7 @@ api.GetAllOutsourcedItens = async () => {
                 itens: []
             }
         })
-} 
+}
 
 //#endregion
 
@@ -1471,4 +1469,189 @@ api.ListAllServices = async () => {
 }
 //#endregion
 
+//#region QuoteController
+api.SaveDraftOrCreateQuote = async (quoteData) => {
+    ConfigureHeader()
+
+    const body = { ...quoteData }
+
+    return await api.post('/quote', body)
+        .then(response => {
+            return {
+                success: true,
+                status: response.data?.quote?.status === 'Em Aprovação' ? 'success' : 'warning',
+                message: response.data?.msg,
+                quote: response.data?.quote
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data?.error ?? error,
+                quote: null
+            }
+        })
+}
+
+api.UpdateOrConsolidateDraft = async (quoteData) => {
+    ConfigureHeader()
+
+    const body = { ...quoteData }
+    console.log('request', body)
+
+    return await api.post('/quote/updateOrConsolidateDraft', body)
+        .then(response => {
+            return {
+                success: true,
+                status: response.data?.quote?.status === 'Em Aprovação' ? 'success' : 'warning',
+                message: response.data?.msg,
+                quote: response.data?.quote
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data?.error ?? error,
+                quote: null
+            }
+        })
+}
+
+api.DiscardDraft = async (quoteID) => {
+    ConfigureHeader()
+
+    return await api.delete(`/quote/${quoteID}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+            }
+        })
+}
+
+api.ChangeQuoteState = async (quoteData) => {
+    ConfigureHeader()
+
+    const body = { ...quoteData }
+
+    return await api.put('/quote/changeState', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data?.msg,
+                quote: response.data?.quote
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data?.error ?? error,
+                quote: null
+            }
+        })
+}
+
+api.PaginatedQuoteList = async (filter, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
+
+    return await api.post('/quote/list', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                quotes: response.data.quotes,
+                totalDrafts: response.data.totalDrafts,
+                totalPending: response.data.totalPending,
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                total: 0,
+                pages: 0,
+                quotes: [],
+                totalDrafts: 0,
+                totalPending: 0,
+            }
+        })
+}
+//#endregion
+
+//#region DocumentController
+api.GenerateBudgetPDF = async (quote) => {
+    ConfigureHeader()
+
+    return await api.post('/document/generate', quote)
+        .then(response => {
+            console.log(response.data)
+            return {
+                success: true,
+                status: 'success',
+                message: response.data.msg,
+                url: response.data.url,
+                docId: response.data.docId
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.data?.error ?? error,
+                url: '',
+                docId: ''
+            }
+        })
+}
+
+api.DownloadBudgetPDF = async (docId) => {
+    ConfigureHeader()
+
+    return await api.get(`/document/download/${docId}`)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                url: response.data.url,
+                docId: response.data.docId
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data.error ?? error,
+                url: '',
+                docId: ''
+
+            }
+        })
+}
+//#endregion
 export default api  

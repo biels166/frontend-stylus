@@ -12,6 +12,7 @@ import { CustomToast } from '../../Toast'
 import { ModalAddUser } from '../ModalAddUser'
 import { useAuth } from '../../../context/AuthContext'
 import { PageControl } from '../../PageControl'
+import { CustomBackdrop } from '../../CustomBackrop'
 
 export const UserList = () => {
     const [itensPerPage, setItensPerPage] = useState(5)
@@ -103,6 +104,8 @@ export const UserList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomTitlePaper>
                 <Typography>
                     Usuários

@@ -103,26 +103,39 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export const Menu = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const [component, setComponent] = useState(0)
+  const [showQuoteSubItens, setShowQuoteSubItens] = useState(false)
   const [menuItens, setMenuItens] = useState(NavItems())
   const navigate = useNavigate()
   const location = useLocation()
   const handleDrawerOpen = () => { setOpen(true) }
   const handleDrawerClose = () => { setOpen(false) }
 
+  const handleShowOrHideSubItem = () => {
+    setShowQuoteSubItens(showQuoteSubItens => !showQuoteSubItens)
+  }
+
   useEffect(() => {
     const currntPath = location.pathname
     const splitedPath = location.pathname.split('/').filter(p => p !== '')
     const isParent = splitedPath.length === 1
 
-    console.log("menu Itens", menuItens)
-    console.log("currente page", location)
-
     //TRATATIVA PARA EVOITAR QUEBRA, JÁ PENSEI NUMA OUTRA FORMA DE RESOLVER. MAS PRECISO TESTAR O REDIRECIONAMENTO PRIMEIRO
+    if (currntPath.includes('cotacao')) {
+      const quoteMenu = menuItens.filter(page => page.path === '/cotacoes')[0].subItens
 
-    if (isParent)
+      if (currntPath.includes('visualizar')) {
+        setComponent(8)
+      }
+      else {
+        setComponent(quoteMenu.filter(page => page.path === currntPath)[0].index)
+      }
+      setShowQuoteSubItens(true)
+    }
+    else if (isParent) {
       setComponent(menuItens.filter(page => page.path === currntPath)[0].index)
+    }
     else {
       const pathBase = `/${splitedPath[0]}`
       setComponent(menuItens.filter(page => page.path === pathBase)[0].index)
@@ -174,54 +187,120 @@ export const Menu = () => {
           {
             menuItens.map(item => (
               item.show && (
-                <ListItem key={item.name} disablePadding sx={{ display: 'block' }}>
-                  <Divider
-                    sx={{
-                      borderColor: item.enable ? '#2775A2' : '#A9A9A9',
-                      borderWidth: item.index === 1 ? '1px' : '0.5px',
-                      borderStyle: 'groove'
-                    }} />
-                  <ListItemButton
-                    onClick={() => {
-                      if (item.enable) {
-                        navigate(`${item.path}`)
-                        setComponent(item.index)
-                      }
-                    }}
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? 'initial' : 'center',
-                      px: 2.5,
-                      backgroundColor: item.enable ? item.index === component ? '#E0FFFF' : '#FFFFFF' : '#FFFFFF',
-                      '&:hover': {
-                        backgroundColor: item.enable ? '#E0FFFF' : '#FFFFFF',
-                        cursor: item.enable ? 'pointer' : 'not-allowed',
-                      }
-                    }}
-                  >
-                    <ListItemIcon
+                <React.Fragment>
+                  <ListItem key={item.name} disablePadding sx={{ display: 'block' }}>
+                    <Divider
                       sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : 'auto',
-                        justifyContent: 'center',
+                        borderColor: item.enable ? '#2775A2' : '#A9A9A9',
+                        borderWidth: item.index === 1 ? '1px' : '0.5px',
+                        borderStyle: 'groove'
+                      }} />
+                    <ListItemButton
+                      onClick={() => {
+                        if (item.enable && !item.subItens) {
+                          navigate(`${item.path}`)
+                          setComponent(item.index)
+                          setShowQuoteSubItens(false)
+                        }
+                        else {
+                          if (item.subItens && (!showQuoteSubItens && component !== 8 && component !== 9))
+                            handleShowOrHideSubItem()
+
+                          handleDrawerOpen()
+                        }
+                      }}
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? 'initial' : 'center',
+                        px: 2.5,
+                        backgroundColor: item.enable ? item.index === component ? '#E0FFFF' : '#FFFFFF' : '#FFFFFF',
+                        '&:hover': {
+                          backgroundColor: item.enable ? '#E0FFFF' : '#FFFFFF',
+                          cursor: item.enable ? 'pointer' : 'not-allowed',
+                        }
                       }}
                     >
-                      <item.icon enable={item.enable} titleAccess={item.name} />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.name}
-                      sx={{
-                        opacity: open ? 1 : 0,
-                        color: item.enable ? '#2775A2' : '#A9A9A9',
-                      }}
-                    />
-                  </ListItemButton>
-                  <Divider sx={{
-                    borderColor: item.enable ? '#2775A2' : '#A9A9A9',
-                    borderWidth: item.index === menuItens.length ? '1px' : '0.5px',
-                    borderStyle: 'groove'
-                  }} />
-                </ListItem>
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : 'auto',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <item.icon enable={item.enable} titleAccess={item.name} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.name}
+                        sx={{
+                          opacity: open ? 1 : 0,
+                          color: item.enable ? '#2775A2' : '#A9A9A9',
+                        }}
+                      />
+                    </ListItemButton>
+
+                    {!showQuoteSubItens && (
+                      <Divider sx={{
+                        borderColor: item.enable ? '#2775A2' : '#A9A9A9',
+                        borderWidth: item.index === menuItens.length ? '1px' : '0.5px',
+                        borderStyle: 'groove'
+                      }} />
+                    )}
+                  </ListItem>
+                  {showQuoteSubItens && item.subItens?.map(subitem => (
+                    <ListItem key={subitem.name} disablePadding sx={{ display: 'block' }}>
+                      <Divider
+                        sx={{
+                          borderColor: subitem.enable ? '#E0FFFF' : '#A9A9A9',
+                          borderWidth: '1px',
+                          borderStyle: 'dashed'
+                        }} />
+                      <ListItemButton
+                        onClick={() => {
+                          if (subitem.enable) {
+                            navigate(`${subitem.path}`)
+                            setComponent(subitem.index)
+                          }
+                        }}
+                        sx={{
+                          maxHeight: '30px',
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                          backgroundColor: subitem.enable ? subitem.index === component ? '#E0FFFF' : '#FFFFFF' : '#FFFFFF',
+                          '&:hover': {
+                            backgroundColor: subitem.enable ? '#E0FFFF' : '#FFFFFF',
+                            cursor: subitem.enable ? 'pointer' : 'not-allowed',
+                          }
+                        }}
+                      >
+                        <ListItemIcon
+
+                          sx={{
+                            minWidth: 0,
+                            ml: 3,
+                            mr: 2,
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <subitem.icon fontSize='small' enable={subitem.enable} titleAccess={subitem.name} />
+                        </ListItemIcon>
+                        <ListItemText
+
+                          primary={subitem.name}
+                          sx={{
+                            opacity: open ? 1 : 0,
+                            color: subitem.enable ? '#2775A2' : '#A9A9A9',
+                          }}
+                        />
+                      </ListItemButton>
+                      <Divider
+                        sx={{
+                          borderColor: subitem.enable ? '#E0FFFF' : '#A9A9A9',
+                          borderWidth: '1px',
+                          borderStyle: 'dashed'
+                        }} />
+                    </ListItem>
+                  ))}
+                </React.Fragment>
               )
             ))
           }

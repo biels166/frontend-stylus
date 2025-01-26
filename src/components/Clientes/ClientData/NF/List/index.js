@@ -17,6 +17,7 @@ import api from '../../../../../services/api'
 import { useAuth } from '../../../../../context/AuthContext'
 import { DateInput } from '../../../../DateInput'
 import { PageControl } from '../../../../PageControl'
+import { CustomBackdrop } from '../../../../CustomBackrop'
 
 
 export const ClientNFList = () => {
@@ -105,6 +106,8 @@ export const ClientNFList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomPaper>
                 <CustomHeader>
                     <Typography id="title" variant="h6" component="h2">

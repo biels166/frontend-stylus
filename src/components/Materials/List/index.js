@@ -20,6 +20,7 @@ import { CustomToast } from '../../Toast'
 import { PageControl } from '../../PageControl'
 import { ModalAddMaterial } from '../ModalAddMaterial'
 import { useLocation, useParams } from 'react-router-dom'
+import { CustomBackdrop } from '../../CustomBackrop'
 
 export const MaterialList = () => {
     const { itemId } = useParams()
@@ -106,6 +107,8 @@ export const MaterialList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomTitlePaper>
                 <Typography>
                     {dataFromStockPage.description}
@@ -115,71 +118,71 @@ export const MaterialList = () => {
             <CustomPaper>
                 <CustomHeader>
 
-                            <SearchField>
-                                <FormControl variant="outlined">
-                                    <InputLabel id="select-outlined-label-item-options">Fornecedor</InputLabel>
-                                    <Select
-                                        required
-                                        labelId="select-outlined-label-supplier-options"
-                                        disabled={!isAdm && !materialPage.Creator}
-                                        value={filter?.supplierId}
-                                        onChange={(e) => {
-                                            setFilter({ ...filter, supplierId: e.target.value })
-                                        }}
-                                        label="Fornecedor"
-                                    >
-                                        <MenuItem value={''}>Selecionar</MenuItem>
-                                        {
-                                            supplierOptions?.length > 0 && (
-                                                supplierOptions?.map(elem => (
-                                                    <MenuItem
-                                                        value={elem._id}>{elem.name}</MenuItem>
-                                                ))
-                                            )
-                                        }
-                                    </Select>
-                                </FormControl>
+                    <SearchField>
+                        <FormControl variant="outlined">
+                            <InputLabel id="select-outlined-label-item-options">Fornecedor</InputLabel>
+                            <Select
+                                required
+                                labelId="select-outlined-label-supplier-options"
+                                disabled={!isAdm && !materialPage.Creator}
+                                value={filter?.supplierId}
+                                onChange={(e) => {
+                                    setFilter({ ...filter, supplierId: e.target.value })
+                                }}
+                                label="Fornecedor"
+                            >
+                                <MenuItem value={''}>Selecionar</MenuItem>
+                                {
+                                    supplierOptions?.length > 0 && (
+                                        supplierOptions?.map(elem => (
+                                            <MenuItem
+                                                value={elem._id}>{elem.name}</MenuItem>
+                                        ))
+                                    )
+                                }
+                            </Select>
+                        </FormControl>
 
-                                <FormControl variant="outlined">
-                                    <InputLabel id="select-outlined-label-batch-options">Lotes</InputLabel>
-                                    <Select
-                                        required
-                                        labelId="select-outlined-label-batch-options"
-                                        disabled={!isAdm && !materialPage.Viewer}
-                                        value={filter?.batch}
-                                        onChange={(e) => {
-                                            setFilter({ ...filter, batch: e.target.value })
-                                        }}
-                                        label="Lotes"
-                                    >
-                                        <MenuItem value={''}>Selecionar</MenuItem>
-                                        {
-                                            batchOptions?.length > 0 && (
-                                                batchOptions?.map(elem => (
-                                                    <MenuItem
-                                                        value={elem.batch}>{elem.batch}</MenuItem>
-                                                ))
-                                            )
-                                        }
-                                    </Select>
-                                </FormControl>
-                                <IconButtons src={searchIcon}
-                                    onClick={() => {
-                                        paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
-                                    }}
-                                />
+                        <FormControl variant="outlined">
+                            <InputLabel id="select-outlined-label-batch-options">Lotes</InputLabel>
+                            <Select
+                                required
+                                labelId="select-outlined-label-batch-options"
+                                disabled={!isAdm && !materialPage.Viewer}
+                                value={filter?.batch}
+                                onChange={(e) => {
+                                    setFilter({ ...filter, batch: e.target.value })
+                                }}
+                                label="Lotes"
+                            >
+                                <MenuItem value={''}>Selecionar</MenuItem>
+                                {
+                                    batchOptions?.length > 0 && (
+                                        batchOptions?.map(elem => (
+                                            <MenuItem
+                                                value={elem.batch}>{elem.batch}</MenuItem>
+                                        ))
+                                    )
+                                }
+                            </Select>
+                        </FormControl>
+                        <IconButtons src={searchIcon}
+                            onClick={() => {
+                                paginatedMaterialListByFilter(filter, currentPage, itensPerPage)
+                            }}
+                        />
 
-                                <ClearButton
-                                    onClick={() => {
-                                        setFilter(defaultFilter)
-                                        setCurrentPage(1)
-                                        paginatedMaterialListByFilter(defaultFilter, 1, itensPerPage)
-                                    }
-                                    }>
-                                    Limpar
-                                </ClearButton>
+                        <ClearButton
+                            onClick={() => {
+                                setFilter(defaultFilter)
+                                setCurrentPage(1)
+                                paginatedMaterialListByFilter(defaultFilter, 1, itensPerPage)
+                            }
+                            }>
+                            Limpar
+                        </ClearButton>
 
-                            </SearchField>
+                    </SearchField>
 
                     {
                         (isAdm || materialPage.Creator) && (

@@ -22,6 +22,7 @@ export const QuoteMaterials = ({
         quantity: '',
         itemCode: '',
         batchId: '',
+        batchValue: '',
         batch: {}
     }
 
@@ -118,10 +119,13 @@ export const QuoteMaterials = ({
                                         disabled={(!isAdm && !quotePage.Creator) || batchesOptions.length === 0}
                                         value={form?.batchId}
                                         onChange={(e) => {
+                                            let batch = batchesOptions.find(p => p.batch === e.target.value)
+                                            
                                             setForm({
                                                 ...form,
                                                 batchId: e.target.value,
-                                                batch: batchesOptions.find(p => p.batch === e.target.value)
+                                                batch: batch,
+                                                batchValue: batch.costPerItem
                                             })
                                         }}
                                         label="Lotes do Item"

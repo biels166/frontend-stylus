@@ -1,65 +1,54 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid } from '@mui/material'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Box, Grid, TextField } from '@mui/material'
 import { CustomBody, CustomDivider, CustomTitlePaper } from './styles'
 import { CustomToast } from '../../Toast'
 import Typography from '@mui/joy/Typography'
 import { docType, formatDateFromFront, formatValue } from '../../../utils'
 
 export const LastQuoteStep = ({
-    quote
+    quote, cacheQuote = () => { }
 }) => {
     const [openToast, setOpenToast] = useState(false)
     const [infoToCustomToast, setInfoToCustomToast] = useState({})
-    const [totalQuote, setTotalQuote] = useState(0)
 
     const hasRegister = (value = '') => { return value.length > 0 ? value : '-' }
 
-    const getTotalProductValue = () => {
-        if (quote?.productList?.length === 0) return formatValue(0)
+    const getTotalValueWithRates = useCallback(() => {
+        let deliveryRate = 0
+        let urgencyRate = 0
+        let discount = 0
 
-        let value = quote?.productList?.reduce((accumulator, item) => accumulator + item.total, 0)
+        try {
+            deliveryRate = parseFloat(quote.deliveryRate)
+        } catch { }
 
-        return formatValue(value)
-    }
+        try {
+            urgencyRate = parseFloat(quote.urgencyRate) / 100
+        } catch { }
 
-    const getTotalServiceValue = () => {
-        if (quote?.serviceList?.length === 0) return formatValue(0)
+        try {
+            discount = parseFloat(quote.discount) / 100
+        } catch { }
 
-        let value = quote?.serviceList?.reduce((accumulator, item) => accumulator + item.total, 0)
+        let totalWithRate = quote.totalWithoutRate
 
-        return formatValue(value)
-    }
+        let totalRate = 0
 
-    const getMaterialTotalCost = () => {
-        if (quote?.materialList?.length === 0) return formatValue(0)
+        if (urgencyRate > 0) totalRate += urgencyRate
 
-        let value = quote?.materialList?.reduce((accumulator, item) => accumulator + item.totalCost, 0)
+        if (discount > 0) totalRate -= discount
 
-        return formatValue(value)
-    }
+        totalWithRate = totalWithRate * (1 + totalRate)
 
-    const getPartnerServiceListTotalCost = () => {
-        if (quote?.partnerServiceList?.length === 0) return formatValue(0)
+        if (deliveryRate > 0) totalWithRate = totalWithRate + deliveryRate
 
-        let value = quote?.partnerServiceList?.reduce((accumulator, item) => accumulator + item.totalCost, 0)
+        return totalWithRate
 
-        return formatValue(value)
-    }
-
-    const getTotalValue = () => {
-        let products = quote?.productList?.reduce((accumulator, item) => accumulator + item.total, 0)
-        let services = quote?.serviceList?.reduce((accumulator, item) => accumulator + item.total, 0)
-        let materials = quote?.materialList?.reduce((accumulator, item) => accumulator + item.totalCost, 0)
-        let partnerServices = quote?.partnerServiceList?.reduce((accumulator, item) => accumulator + item.totalCost, 0)
-
-        let total = products + services - (materials + partnerServices)
-
-        setTotalQuote(total)
-    }
+    }, [quote])
 
     useEffect(() => {
-        getTotalValue()
-    }, [quote])
+        getTotalValueWithRates()
+    }, [])
 
     return (
         <Box maxHeight={'700px'} overflow={'scroll'}>
@@ -293,47 +282,132 @@ export const LastQuoteStep = ({
                     <Grid container spacing={3} sx={{ width: '100%' }}>
                         <Grid item xs={6} lg={6}>
                             <Typography>
-                                Valor Total dos Produtos: <span>{getTotalProductValue()}</span>
+                                Valor Total dos Produtos: <span>{formatValue(quote.productsValue)}</span>
                             </Typography>
                         </Grid>
                         <Grid item xs={6} lg={6}>
                             <Typography>
-                                Valor Total dos Serviços: <span>{getTotalServiceValue()}</span>
+                                Valor Total dos Serviços: <span>{formatValue(quote.servicesValue)}</span>
                             </Typography>
                         </Grid>
                         <Grid item xs={6} lg={6}>
                             <Typography>
-                                Custo Total dos Insumo: <span>{getMaterialTotalCost()}</span>
+                                Custo Total dos Insumo: <span>{formatValue(quote.materialsCost)}</span>
                             </Typography>
                         </Grid>
                         <Grid item xs={6} lg={6}>
                             <Typography>
-                                Custo Total da Terceirização: <span>{getPartnerServiceListTotalCost()}</span>
+                                Custo Total da Terceirização: <span>{formatValue(quote.partnerServicesCost)}</span>
                             </Typography>
                         </Grid>
                     </Grid>
 
                     <Box
                         display={'flex'}
-                        justifyContent={'center'}
-                        marginTop={'15px'}
-                        width={'100%'}
+                        flexDirection={'row'}
+                        gap={'10px'}
+                        marginBottom={'20px'}
                         sx={{
-                            background: '#e8fcfc',
-                            '& .MuiTypography-root': {
-                                color: '#2775A2',
-                                fontWeight: 'bolder',
-                                fontFamily: 'sans-serif',
-                                fontSize: '20px',
-                                '& span': {
-                                    color: totalQuote > 0 ? '#1F7A1F' : '#FF0000',
+                            '& .MuiTextField-root': {
+                                m: 1,
+                                '& .MuiInputBase-root': {
+                                    '&:before': {
+                                        borderColor: '#2775A2', // Borda padrão
+                                    },
+                                    '&:hover:not(.Mui-disabled):before': {
+                                        borderColor: '#2775A2', // Borda ao passar o mouse
+                                    },
+                                    '&.Mui-focused:before': {
+                                        borderColor: '#2775A2', // Borda ao focar no campo
+                                    },
                                 },
                             },
                         }}
                     >
-                        <Typography >
-                            TOTAL: <span>{formatValue(totalQuote)}</span>
-                        </Typography>
+                        <TextField
+                            variant='standard'
+                            id="outlined-required-deliveryRate"
+                            label="Taxa de Entrega (R$)"
+                            placeholder="digite o valor da taxa de entrega"
+                            value={quote?.deliveryRate}
+                            onChange={(e) => {
+                                cacheQuote({ ...quote, deliveryRate: e.target.value.replace(/[^\d.,]/g, '') })
+                            }}
+                        />
+
+                        <TextField
+                            variant='standard'
+                            id="outlined-required-urgencyRate"
+                            label="Taxa de Urgência (%)"
+                            placeholder="digite o valor da taxa de urgência"
+                            value={quote?.urgencyRate}
+                            onChange={(e) => {
+                                cacheQuote({ ...quote, urgencyRate: e.target.value.replace(/[^\d.,]/g, '') })
+                            }}
+                        />
+
+                        <TextField
+                            variant='standard'
+                            id="outlined-required-discount"
+                            label="Desconto (%)"
+                            placeholder="digite o valor do desconto"
+                            value={quote?.discount}
+                            onChange={(e) => {
+                                cacheQuote({ ...quote, discount: e.target.value.replace(/[^\d.,]/g, '') })
+                            }}
+                        />
+                    </Box>
+
+                    <Box
+                        display={'flex'}
+                        flexDirection={'row'}
+                        justifyContent={'space-between'}
+                    >
+                        <Box
+                            display={'flex'}
+                            justifyContent={'center'}
+                            marginTop={'15px'}
+                            width={'100%'}
+                            sx={{
+                                background: '#e8fcfc',
+                                '& .MuiTypography-root': {
+                                    color: '#2775A2',
+                                    fontWeight: 'bolder',
+                                    fontFamily: 'sans-serif',
+                                    fontSize: '20px',
+                                    '& span': {
+                                        color: '#363636',
+                                    },
+                                },
+                            }}
+                        >
+                            <Typography >
+                                Valor Bruto Total: <span>{formatValue(getTotalValueWithRates())}</span>
+                            </Typography>
+                        </Box>
+
+                        <Box
+                            display={'flex'}
+                            justifyContent={'center'}
+                            marginTop={'15px'}
+                            width={'100%'}
+                            sx={{
+                                background: '#e8fcfc',
+                                '& .MuiTypography-root': {
+                                    color: '#2775A2',
+                                    fontWeight: 'bolder',
+                                    fontFamily: 'sans-serif',
+                                    fontSize: '20px',
+                                    '& span': {
+                                        color: getTotalValueWithRates() > 0 ? '#1F7A1F' : '#FF0000',
+                                    },
+                                },
+                            }}
+                        >
+                            <Typography >
+                                Lucro Liquido: <span>{formatValue(getTotalValueWithRates() - (quote.materialsCost + quote.partnerServicesCost))}</span>
+                            </Typography>
+                        </Box>
                     </Box>
                 </Box>
             </CustomBody >

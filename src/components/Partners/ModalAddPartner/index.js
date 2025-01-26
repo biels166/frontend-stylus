@@ -7,7 +7,7 @@ import api from '../../../services/api'
 import { Box, MenuItem, Modal, TextField, Typography } from '@mui/material'
 import { CustomToast } from '../../Toast'
 import { UFS } from '../../../constants/UFS'
-import { formatCellphone, formatDocument, formatPhone } from '../../../utils'
+import { formatCellphone, formatDocument, formatPhone, getOnlyNumber } from '../../../utils'
 import { ChipsCategories } from '../ChipsCategories'
 
 export const ModalAddPartner = ({
@@ -184,7 +184,7 @@ export const ModalAddPartner = ({
                                     placeholder="digite o número do logradouro do parceiro"
                                     value={form.number}
                                     onChange={(e) => {
-                                        setForm({ ...form, number: e.target.value })
+                                        setForm({ ...form, number: getOnlyNumber(e.target.value) })
                                     }}
                                 />
 

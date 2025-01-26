@@ -7,7 +7,9 @@ import {
     CustomOSIcon,
     CustomHomeIcon,
     PartnersIcon,
-    CustomCategoryIcon
+    CustomCategoryIcon,
+    CustomCreateQuoteIcon,
+    CustomListQuoteIcon
 } from './styles'
 import { UserList } from '../../Users/List'
 import { ClientList } from '../../Clientes/List'
@@ -23,6 +25,8 @@ import { CategoryTabs } from '../../Category'
 import { PartnerList } from './../../Partners/List/index';
 import { StockList } from '../../stock/List'
 import { CreateQuotePage } from '../../Quotes/CreateQuote'
+import { QuoteList } from '../../Quotes/List'
+import { QuoteVisualizer } from '../../Quotes/Viewer'
 
 export const NavErrors = () => {
     return [
@@ -175,17 +179,47 @@ export const NavItems = () => {
             name: 'Cotações',
             path: '/cotacoes',
             icon: CustomQuoteIcon,
-            element: <CreateQuotePage />,
+           // element: <CreateQuotePage />,
             roles: [
                 process.env.REACT_APP_ADMINISTRADOR,
                 process.env.REACT_APP_VISUALIZAR_COTACAO
             ],
             enable: isAdm || quotePage.Viewer,
-            show: true
+            show: true,
+            subItens: [
+                {
+                    index: 8,
+                    name: 'Lista de Cotações',
+                    path: '/listagem-cotacao',
+                    icon: CustomListQuoteIcon,
+                    enable: isAdm || quotePage.Viewer,
+                    show: true,
+                    element: <QuoteList/>,
+                    children: [
+                        {
+                            index: 8,
+                            name: 'Visualizar Cotação',
+                            path: '/visualizar-cotacao/:number',
+                            enable: isAdm || quotePage.Viewer,
+                            show: true,
+                            element: <QuoteVisualizer />,
+                        }
+                    ]
+                },
+                {
+                    index: 9,
+                    name: 'Criar Nova Cotação',
+                    path: '/criar-cotacao',
+                    icon: CustomCreateQuoteIcon,
+                    enable: isAdm || quotePage.Creator,
+                    show: true,
+                    element: <CreateQuotePage />,
+                },
+            ]
         },
         //Ordens de Serviço
         {
-            index: 8,
+            index: 10,
             name: 'Ordens de Serviço',
             path: '/ordens',
             icon: CustomOSIcon,

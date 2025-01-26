@@ -110,7 +110,7 @@ export const MaterialCard = ({ material }) => {
         </Grid>
         <Grid item xs={6} lg={6}>
           <Typography>
-            Qtd do Lote Disponível: <span>{batch?.total}</span>
+            Qtd do Lote Disponível: <span>{batch?.available}</span>
           </Typography>
         </Grid>
       </Grid>

@@ -27,6 +27,7 @@ import { PageControl } from '../../PageControl'
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import { List, ListItem, Radio, RadioGroup } from '@mui/joy'
 import { ChipsCategories } from '../ChipsCategories'
+import { CustomBackdrop } from '../../CustomBackrop'
 
 export const PartnerList = () => {
     const defaultFilter = {
@@ -107,6 +108,8 @@ export const PartnerList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomTitlePaper>
                 <Typography>
                     {filter.partnerType === 'Fornecedores' ? 'Fornecedores' : 'Terceiros / Prestadores de serviço'}

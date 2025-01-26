@@ -44,7 +44,9 @@ export const PrivateRoute = () => {
             (currentPath === '/produtos' && !productPage.Viewer) ||
             (currentPath === '/materiais' && !materialPage.Viewer) ||
             (currentPath.includes('/estoque') && !materialPage.Viewer) ||
-            (currentPath === '/cotacoes' && !quotePage.Viewer) ||
+            (currentPath === '/listagem-cotacao' && !quotePage.Viewer) ||
+            (currentPath === '/visualizar-cotacao' && !quotePage.Viewer) ||
+            (currentPath === '/criar-cotacao' && !quotePage.Creator) ||
             (currentPath === '/ordens' && !orderPage.Viewer)
         )
     )

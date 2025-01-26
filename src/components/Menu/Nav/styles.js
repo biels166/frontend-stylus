@@ -8,9 +8,21 @@ import Diversity3Icon from '@mui/icons-material/Diversity3';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import DataSaverOnSharpIcon from '@mui/icons-material/DataSaverOnSharp';
+import PlaylistAddCheckCircleOutlinedIcon from '@mui/icons-material/PlaylistAddCheckCircleOutlined';
 
 export const CustomHomeIcon = styled(HomeIcon)({
     color: '#2775A2'
+})
+
+export const CustomListQuoteIcon = styled(PlaylistAddCheckCircleOutlinedIcon)({
+    color: (props) => props.enable ? '#2775A2' : '#A9A9A9',
+    cursor: (props) => props.enable ? 'pointer' : 'not-allowed'
+})
+
+export const CustomCreateQuoteIcon = styled(DataSaverOnSharpIcon)({
+    color: (props) => props.enable ? '#2775A2' : '#A9A9A9',
+    cursor: (props) => props.enable ? 'pointer' : 'not-allowed'
 })
 
 export const CustomCategoryIcon = styled(CategoryOutlinedIcon)({

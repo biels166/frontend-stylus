@@ -16,6 +16,7 @@ import { CustomToast } from '../../../../Toast'
 import api from '../../../../../services/api'
 import { useAuth } from '../../../../../context/AuthContext'
 import { PageControl } from '../../../../PageControl'
+import { CustomBackdrop } from '../../../../CustomBackrop'
 
 export const OfferedList = () => {
     const { partnerId } = useParams()
@@ -121,6 +122,8 @@ export const OfferedList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomPaper>
                 <CustomHeader>
                     <Typography id="title" variant="h6" component="h2">

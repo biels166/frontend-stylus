@@ -8,7 +8,7 @@ import { CustomToast } from '../../../Toast'
 import { UFS } from '../../../../constants/UFS'
 import { SkeletonClientDetails } from './skeleton'
 import { useLocation, useParams } from 'react-router-dom'
-import { formatCellphone, formatDocument, formatPhone } from '../../../../utils'
+import { formatCellphone, formatDocument, formatPhone, getOnlyNumber } from '../../../../utils'
 import { useAuth } from '../../../../context/AuthContext'
 
 export const ClientDetails = ({ handleClientName = () => String }) => {
@@ -195,7 +195,7 @@ export const ClientDetails = ({ handleClientName = () => String }) => {
                                             placeholder="digite o número do logradouro do cliente"
                                             value={form.number}
                                             onChange={(e) => {
-                                                setForm({ ...form, number: e.target.value })
+                                                setForm({ ...form, number: getOnlyNumber(e.target.value) })
                                             }}
                                         />
 

@@ -19,6 +19,7 @@ import { useAuth } from '../../../context/AuthContext'
 import { ModalAddClient } from '../ModalAddClient'
 import { CustomToast } from '../../Toast'
 import { PageControl } from '../../PageControl'
+import { CustomBackdrop } from '../../CustomBackrop'
 
 export const ClientList = () => {
     const [itensPerPage, setItensPerPage] = useState(5)
@@ -109,6 +110,8 @@ export const ClientList = () => {
 
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+
             <CustomTitlePaper>
                 <Typography>
                     Clientes

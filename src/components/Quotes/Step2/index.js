@@ -60,9 +60,6 @@ export const QuoteProduct = ({
         })
     }, [productList, form])
 
-    useEffect(() => {
-console.log('productList recebido', productList)
-    }, [productList, form])
     return (
 
         <React.Fragment>

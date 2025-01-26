@@ -19,10 +19,11 @@ import { useAuth } from '../../../context/AuthContext'
 import { CustomToast } from '../../Toast'
 import { PageControl } from '../../PageControl'
 import { ModalAddMaterial } from '../ModalAddMaterial'
+import { CustomBackdrop } from '../../CustomBackrop'
 
 export const StockList = () => {
     const defaultFilter = {
-       itemId: ''
+        itemId: ''
     }
     const [filter, setFilter] = useState(defaultFilter)
     const [itensPerPage, setItensPerPage] = useState(10)
@@ -89,12 +90,10 @@ export const StockList = () => {
         getAllSupplierItens()
     }, [])
 
-    useEffect(() => {
-        console.log('filter', filter)
-    }, [filter])
-
     return (
         <React.Fragment>
+            <CustomBackdrop open={loadingList} />
+            
             <CustomTitlePaper>
                 <Typography>
                     Controle de Estoque

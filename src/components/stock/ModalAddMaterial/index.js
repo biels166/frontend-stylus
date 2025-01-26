@@ -123,8 +123,6 @@ export const ModalAddMaterial = ({
 
     useEffect(() => { setForm({}) }, [])
 
-    useEffect(() => { console.log('form', form) }, [form])
-
     const handleCloseToast = () => { setOpenToast(false) }
     const handleOnClose = () => {
         handleClear()
