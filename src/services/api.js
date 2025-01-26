@@ -30,7 +30,7 @@ api.AuthUserLogin = async (login, password) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.response.data.error ?? error
+                message: error.data.error ?? error
             }
         })
 }
@@ -1499,7 +1499,6 @@ api.UpdateOrConsolidateDraft = async (quoteData) => {
     ConfigureHeader()
 
     const body = { ...quoteData }
-    console.log('request', body)
 
     return await api.post('/quote/updateOrConsolidateDraft', body)
         .then(response => {
