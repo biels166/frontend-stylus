@@ -2,7 +2,7 @@ import * as React from 'react';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { CustomAddTaskIcon, CustomBody, CustomCard, CustomCompletedIcon, CustomDeliveryIcon, CustomFooter, CustomLocationIcon, CustomOthersIcon, CustomPaidIcon, DeleteTask, DiscardChanges, SaveChanges } from './styles';
+import { CustomAddTaskIcon, CustomBody, CustomBudgetIcon, CustomCard, CustomCompletedIcon, CustomDeliveryIcon, CustomFooter, CustomLocationIcon, CustomOthersIcon, CustomPaidIcon, DeleteTask, DiscardChanges, SaveChanges } from './styles';
 import { CustomSwitch } from '../Switch';
 import { DateInput } from './../DateInput/index';
 import { Box, MenuItem, Select, TextField } from '@mui/material';
@@ -67,6 +67,10 @@ export default function TaskCard({ task, handleReloadPageList = () => Boolean })
       {
         type: 'Outros',
         icon: <CustomOthersIcon fontSize='large' state={form?.state} />
+      },
+      {
+        type: 'Orçamento',
+        icon: <CustomBudgetIcon fontSize='large' state={form?.state} />
       },
       {
         type: '',
@@ -160,13 +164,12 @@ export default function TaskCard({ task, handleReloadPageList = () => Boolean })
               labelId="select-outlined-label-type"
               value={form?.type}
               onChange={(evt) => {
-                console.log(evt.target.value)
                 setForm({ ...form, type: evt.target.value })
               }}
               label="Tipo da tarefa*"
             >
               {
-                taskTypeList().map(elem => (
+                taskTypeList().filter(t => t.type !== '').map(elem => (
                   <MenuItem
                     selected={elem.type === form?.type}
                     value={elem.type}

@@ -6,7 +6,7 @@ import ShareLocationIcon from '@mui/icons-material/ShareLocation'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import StyleIcon from '@mui/icons-material/Style';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 export const CustomCard = styled(Card)({
     maxWidth: 345,
@@ -49,6 +49,20 @@ export const CustomAddTaskIcon = styled(NoteAddIcon)({
 })
 
 export const CustomOthersIcon = styled(StyleIcon)({
+    color: (props) => {
+        switch(props.state) {
+            case 'Concluída': return '#006400'; 
+            case 'Atrasada': return '#8B0000';
+            case 'Próxima de Vencer': return '#008B8B';
+            case 'Hoje': return '#FF8C00';
+            case 'Em dia': return '#003C73'; 
+            case 'Nova Tarefa': return '#000000';
+            default: return '#003C73'; 
+        } 
+    }
+})
+
+export const CustomBudgetIcon = styled(AccountBalanceWalletIcon)({
     color: (props) => {
         switch(props.state) {
             case 'Concluída': return '#006400'; 
