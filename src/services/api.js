@@ -30,7 +30,7 @@ api.AuthUserLogin = async (login, password) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error
+                message: error.response?.data?.error ?? error
             }
         })
 }
@@ -58,7 +58,7 @@ api.PaginatedUserList = async (pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error,
+                message: error.response?.data?.error,
                 total: 0,
                 pages: 0,
                 users: []
@@ -88,7 +88,7 @@ api.PaginatedUserListByName = async (name, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 users: []
@@ -114,7 +114,7 @@ api.CreateUser = async (userData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 user: null
             }
         })
@@ -139,7 +139,7 @@ api.UpdateUser = async (userData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 user: null
             }
         })
@@ -161,7 +161,7 @@ api.DeleteUser = async (userID) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -189,7 +189,7 @@ api.PaginatedTaskByUser = async (filter, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 tasks: []
@@ -215,7 +215,7 @@ api.CreateTaskByUser = async (task) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 task: null
             }
         })
@@ -239,7 +239,7 @@ api.UpdateTask = async (task) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 task: null
             }
         })
@@ -261,7 +261,7 @@ api.DeleteTask = async (id) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -289,7 +289,7 @@ api.PaginatedClientList = async (pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error,
+                message: error.response?.data?.error,
                 total: 0,
                 pages: 0,
                 clients: []
@@ -319,7 +319,7 @@ api.PaginatedClientListByName = async (name, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 clients: []
@@ -365,7 +365,7 @@ api.CreateClient = async (clientData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 client: null
             }
         })
@@ -390,7 +390,7 @@ api.UpdateClient = async (clientData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 client: null
             }
         })
@@ -413,7 +413,7 @@ api.GetClientById = async (clientId) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 client: null
             }
         })
@@ -435,7 +435,7 @@ api.DeleteClient = async (clientId) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -463,7 +463,7 @@ api.PaginatedPartnerList = async (filter, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 partners: []
@@ -490,7 +490,7 @@ api.GetSupplierOptions = async (category) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 partners: []
@@ -517,7 +517,7 @@ api.GetOutsourcedOptions = async (category) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 partners: []
@@ -544,7 +544,7 @@ api.CreatePartner = async (partnerData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 partner: null
             }
         })
@@ -569,7 +569,7 @@ api.UpdatePartner = async (partnerData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 partner: null
             }
         })
@@ -592,7 +592,7 @@ api.GetPartnerById = async (partnerId) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 partner: null
             }
         })
@@ -614,7 +614,7 @@ api.DeletePartner = async (partnerId) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -642,7 +642,7 @@ api.PaginatedOfferedList = async (filter, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 offered: []
@@ -669,7 +669,7 @@ api.CreateOffered = async (offeredData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 offered: null
             }
         })
@@ -694,7 +694,7 @@ api.UpdateOffered = async (offeredData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 offered: null
             }
         })
@@ -716,7 +716,7 @@ api.DeleteOffered = async (offeredId) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -744,7 +744,7 @@ api.PaginatedContactListByPerson = async (personId, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error,
+                message: error.response?.data?.error,
                 total: 0,
                 pages: 0,
                 contacts: []
@@ -772,7 +772,7 @@ api.CreateContact = async (contactData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 contact: null
             }
         })
@@ -797,7 +797,7 @@ api.UpdateContact = async (contactData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 contact: null
             }
         })
@@ -819,7 +819,7 @@ api.DeleteContact = async (contactId) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -847,7 +847,7 @@ api.PaginatedNFListByClient = async (clientId, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 nfs: []
@@ -873,7 +873,7 @@ api.CreateNFByClientClient = async (NFe) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 nf: null
             }
         })
@@ -897,7 +897,7 @@ api.UpdateNF = async (NFe) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 nf: null
             }
         })
@@ -919,7 +919,7 @@ api.DeleteNF = async (id) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -944,7 +944,7 @@ api.CreateCategory = async (category) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 category: null
             }
         })
@@ -967,7 +967,7 @@ api.GetCategoryOptions = async () => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 categories: null
             }
         })
@@ -991,7 +991,7 @@ api.CreateItemCategory = async (item) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 item: null
             }
         })
@@ -1015,7 +1015,7 @@ api.UpdateItemCategory = async (item) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 item: null
             }
         })
@@ -1037,7 +1037,7 @@ api.DeleteItemCategory = async (id) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -1059,7 +1059,7 @@ api.GetByItemCode = async (itemCode) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 item: null
             }
         })
@@ -1086,7 +1086,7 @@ api.PaginatedItensByCategory = async (filter, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 itens: []
@@ -1113,7 +1113,7 @@ api.GetAllItensByCategory = async (categoriesCode) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 itens: []
@@ -1140,7 +1140,7 @@ api.GetAllSupplierItens = async () => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 itens: []
@@ -1167,7 +1167,7 @@ api.GetAllOutsourcedItens = async () => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 itens: []
@@ -1195,7 +1195,7 @@ api.GetBatch = async (batchCode) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 batch: null
             }
         })
@@ -1220,7 +1220,7 @@ api.ListBatchesOptions = async (filter) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 batch: null
             }
         })
@@ -1249,7 +1249,7 @@ api.ListStockControl = async (filter, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 stocks: null,
                 total: 0,
                 pages: 0,
@@ -1280,7 +1280,7 @@ api.PaginatedMaterialListByFilter = async (filter, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 materials: []
@@ -1306,7 +1306,7 @@ api.CreateMaterial = async (materialData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 material: null
             }
         })
@@ -1331,7 +1331,7 @@ api.UpdateMaterial = async (materialData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 material: null
             }
         })
@@ -1353,7 +1353,7 @@ api.DeleteMaterial = async (materialID) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -1420,7 +1420,7 @@ api.CreateProduct = async (productData) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 product: null
             }
         })
@@ -1536,7 +1536,7 @@ api.DiscardDraft = async (quoteID) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
             }
         })
 }
@@ -1589,7 +1589,7 @@ api.PaginatedQuoteList = async (filter, pageNumber, rowsPage) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 total: 0,
                 pages: 0,
                 quotes: [],
@@ -1620,7 +1620,7 @@ api.GenerateBudgetPDF = async (quote) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 url: '',
                 docId: ''
             }
@@ -1645,7 +1645,7 @@ api.DownloadBudgetPDF = async (docId) => {
             return {
                 success: false,
                 status: 'error',
-                message: error.data?.error ?? error,
+                message: error.response?.data?.error ?? error,
                 url: '',
                 docId: ''
 

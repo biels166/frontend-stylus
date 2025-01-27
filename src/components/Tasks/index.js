@@ -80,7 +80,7 @@ export default function TaskCard({ task, handleReloadPageList = () => Boolean })
 
     const response = task._id === null ? 
     await api.CreateTaskByUser(form) : await api.UpdateTask(form)
-
+    
     if (response.success) {
       setTimeout(() => {
         handleReloadPageList(true)
