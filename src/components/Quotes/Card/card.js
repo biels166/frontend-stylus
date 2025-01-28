@@ -9,6 +9,7 @@ import api from '../../../services/api'
 import { ModalDeletePartner } from '../../Partners/ModalDeletePartner'
 import { CustomSpeedDial } from '../../CustomSpeedDial'
 import { CustomToast } from '../../Toast'
+import { CustomBackdrop } from './../../CustomBackrop/index';
 
 export const QuoteCard = ({
   quote,
@@ -16,6 +17,7 @@ export const QuoteCard = ({
 }) => {
   const [infoToCustomToast, setInfoToCustomToast] = useState({})
   const [openToast, setOpenToast] = useState(false)
+  const [openBackdrop, setOpenBackdrop] = useState(false)
   const navigate = useNavigate()
   const handleCloseToast = () => { setOpenToast(false) }
   const handleReloadPageList = () => { handleReloadPage(true) }
@@ -35,6 +37,7 @@ export const QuoteCard = ({
   }, [])
 
   async function ChangeQuoteState(status) {
+    setOpenBackdrop(true)
     const response = await api.ChangeQuoteState({
       ...quote,
       status
@@ -46,6 +49,7 @@ export const QuoteCard = ({
     })
 
     setOpenToast(true)
+    setOpenBackdrop(false)
 
     if (response.success) {
       setTimeout(() => {
@@ -55,6 +59,7 @@ export const QuoteCard = ({
   }
 
   async function discardDraft(id) {
+    setOpenBackdrop(true)
     const response = await api.DiscardDraft(id)
 
     setInfoToCustomToast({
@@ -63,6 +68,7 @@ export const QuoteCard = ({
     })
 
     setOpenToast(true)
+    setOpenBackdrop(false)
 
     if (response.success) {
       setTimeout(() => {
@@ -72,6 +78,7 @@ export const QuoteCard = ({
   }
 
   async function generateBudget() {
+    setOpenBackdrop(true)
     setInfoToCustomToast({
       severity: 'info',
       info: 'Gerando orçamento.....Aguarde !',
@@ -82,6 +89,7 @@ export const QuoteCard = ({
     const response = await api.GenerateBudgetPDF(quote)
 
     setOpenToast(false)
+    setOpenBackdrop(false)
 
     setInfoToCustomToast({
       severity: response.status,
@@ -145,6 +153,8 @@ export const QuoteCard = ({
 
   return (
     <React.Fragment>
+      <CustomBackdrop open={openBackdrop}/>
+      
       <Container status={quote.status}>
         <ChipsBox>
           <Chip
@@ -265,6 +275,7 @@ export const QuoteCard = ({
 
       <CustomToast
         open={openToast}
+        timeDuration={10000}
         severity={infoToCustomToast.severity}
         info={infoToCustomToast.info}
         handleOnClose={handleCloseToast}
