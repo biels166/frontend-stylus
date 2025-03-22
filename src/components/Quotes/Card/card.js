@@ -33,8 +33,31 @@ export const QuoteCard = ({
     }
   }
 
-  useEffect(() => {
-  }, [])
+  async function CreateServiceOrder(quoteData) {
+  setInfoToCustomToast({
+    severity: `Gerando OS para a cotação ${quoteData.number}...Aguarde !`,
+    info: 'info',
+  })
+
+  setOpenToast(true)
+  setOpenBackdrop(true)
+
+  const response = await api.CreateServiceOrder(quote)
+
+  setInfoToCustomToast({
+    severity: response.status,
+    info: response.message,
+  })
+
+  setOpenToast(true)
+  setOpenBackdrop(false)
+
+  if (response.success) {
+    setTimeout(() => {
+      handleReloadPageList()
+    }, 3000)
+  }
+}
 
   async function ChangeQuoteState(status) {
     setOpenBackdrop(true)
@@ -51,7 +74,13 @@ export const QuoteCard = ({
     setOpenToast(true)
     setOpenBackdrop(false)
 
-    if (response.success) {
+    if (response.success && status === 'Aprovada') {
+      setTimeout(() => {
+        CreateServiceOrder(response.quote)
+      }, 1000)
+    }
+
+    if (response.success && status === 'Cancelada') {
       setTimeout(() => {
         handleReloadPageList()
       }, 3000)
@@ -253,7 +282,7 @@ export const QuoteCard = ({
 
           <Grid item xs={12} lg={12}>
             <Typography>
-              Valor Gerado Pela Taxas: <span>{formatValue(quote.totalWithRate - quote.totalWithoutRate)}</span>
+              Valor Gerado Pelas Taxas: <span>{formatValue(quote.totalWithRate - quote.totalWithoutRate)}</span>
             </Typography>
           </Grid>
 

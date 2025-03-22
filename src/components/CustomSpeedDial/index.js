@@ -13,7 +13,20 @@ export const CustomSpeedDial = ({ status = "", hasBudget = false, handleSelected
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
+  const getDowloadActionName = () => {
+    if (status === 'Cancelada') return 'Baixar Histórico do Orçamento'
+
+    if (status === 'Em Execução') return 'Baixar Orçamento Aprovado'
+
+    return 'Baixar Orçamento'
+  }
+
   const actions = [
+    {
+      icon: <CustomApproveIcon />,
+      name: 'Finalizar Ordem de Serviço',
+      show: status === 'Em Execução'
+    },
     {
       icon: <CustomCancelIcon />,
       name: 'Cancelar Cotação',
@@ -31,11 +44,12 @@ export const CustomSpeedDial = ({ status = "", hasBudget = false, handleSelected
     },
     {
       icon: <CustomDownloadIcon />,
-      name: (status === 'Cancelada' ? 'Baixar Histórico do Orçamento' : 'Baixar Orçamento'),
+      name: getDowloadActionName(),
       show: (
-        status === 'Aprovada' || 
+        status === 'Aprovada' ||
         status === 'Em Aprovação' ||
-        status === 'Cancelada'
+        status === 'Cancelada' ||
+        status === 'Em Execução'
       ) && hasBudget
     },
     {
@@ -51,7 +65,12 @@ export const CustomSpeedDial = ({ status = "", hasBudget = false, handleSelected
     {
       icon: <CustomViewIcon />,
       name: 'Ver Cotação',
-      show: status !== 'Em Rascunho'
+      show: status !== 'Em Rascunho' && status !== 'Concluída'
+    },
+    {
+      icon: <CustomViewIcon />,
+      name: 'Ver Ordem de Serviço',
+      show: status === 'Concluída'
     },
   ]
 

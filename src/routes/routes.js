@@ -14,6 +14,7 @@ import { MaterialList } from '../components/Materials/List'
 import { CreateQuotePage } from '../components/Quotes/CreateQuote'
 import { QuoteList } from '../components/Quotes/List'
 import { QuoteVisualizer } from '../components/Quotes/Viewer'
+import { ServiceOrderVisualizer } from '../components/ServiceOrder/Viewer'
 
 export const Routering = () => {
     const menuItens = NavItems()
@@ -44,6 +45,7 @@ export const Routering = () => {
                                         <Route path='/rascunho-cotacao/:number' element={<CreateQuotePage />} />
                                         <Route path='/listagem-cotacao' element={<QuoteList />} />
                                         <Route path='/visualizar-cotacao/:number' element={<QuoteVisualizer />} />
+                                        <Route path='/visualizar-ordem/:number' element={<ServiceOrderVisualizer />} />
                                     </React.Fragment>
                                 ))
                             }

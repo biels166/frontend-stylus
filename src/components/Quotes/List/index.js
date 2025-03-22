@@ -6,11 +6,8 @@ import {
     IconButtons,
     SearchField,
     ClearButton,
-    AddButton,
     CustomResponse,
     CustomPaginator,
-    CustomOutsourcedIcon,
-    CustomAccordion,
     CustomCancelIcon,
     CustomDraftIcon,
     CustomPendingIcon,
@@ -20,15 +17,12 @@ import {
 import searchIcon from '../../../assets/search_icon.svg'
 import { ListSkeleton } from './skeleton'
 import api from '../../../services/api'
-import { AccordionDetails, AccordionSummary, Badge, Box, TextField, Typography } from '@mui/material'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Badge, TextField, Typography } from '@mui/material'
 import { useAuth } from '../../../context/AuthContext'
 import { CustomToast } from '../../Toast'
 import { PageControl } from '../../PageControl'
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import { List, ListItem, Radio, RadioGroup } from '@mui/joy'
-import { ChipsCategories } from '../../Partners/ChipsCategories'
 import { QuoteCard } from '../Card/card'
 import { getOnlyNumber } from '../../../utils'
 import { CustomBackdrop } from '../../CustomBackrop'
@@ -120,10 +114,10 @@ export const QuoteList = () => {
     }
 
     const handleBadgeContent = (status) => {
-        if (status == 'Em Rascunho')
+        if (status === 'Em Rascunho')
             return responseQuoteList.totalDrafts
 
-        if (status == 'Em Aprovação')
+        if (status === 'Em Aprovação')
             return responseQuoteList.totalPending
 
         return 0

@@ -27,6 +27,8 @@ import { StockList } from '../../stock/List'
 import { CreateQuotePage } from '../../Quotes/CreateQuote'
 import { QuoteList } from '../../Quotes/List'
 import { QuoteVisualizer } from '../../Quotes/Viewer'
+import { ServiceOrderList } from '../../ServiceOrder/List'
+import { ServiceOrderVisualizer } from '../../ServiceOrder/Viewer'
 
 export const NavErrors = () => {
     return [
@@ -46,7 +48,7 @@ export const NavErrors = () => {
 }
 
 export const NavItems = () => {
-    const { isAdm, userPage, clientPage, partnerPage, productPage, materialPage, quotePage } = useAuth()
+    const { isAdm, userPage, clientPage, partnerPage, productPage, materialPage, quotePage, orderPage } = useAuth()
     return [
         //Homa
         {
@@ -223,13 +225,19 @@ export const NavItems = () => {
             name: 'Ordens de Serviço',
             path: '/ordens',
             icon: CustomOSIcon,
-            element: <h1>Ordens de Serviço</h1>,
-            roles: [
-                process.env.REACT_APP_ADMINISTRADOR,
-                process.env.REACT_APP_VISUALIZAR_OS
-            ],
+            element: <ServiceOrderList />,
             enable: isAdm,
-            show: true
+            show: true,
+            children: [
+                {
+                    index: 10,
+                    name: 'Visualizar Ordem de Serviço',
+                    path: '/visualizar-ordem/:number',
+                    enable: isAdm || orderPage.Viewer,
+                    show: true,
+                    element: <ServiceOrderVisualizer />,
+                }
+            ]
         },
     ]
 }

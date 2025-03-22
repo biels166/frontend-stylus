@@ -1600,6 +1600,96 @@ api.PaginatedQuoteList = async (filter, pageNumber, rowsPage) => {
 }
 //#endregion
 
+//#region ServiceOrderController
+api.CreateServiceOrder = async (quoteData) => {
+    ConfigureHeader()
+
+    //envia os dados da cotação aprovada para ser convertida em ORDEM DE SERVIÇO
+    const body = { ...quoteData }
+
+    return await api.post('/serviceorder', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data?.msg,
+                order: response.data?.order
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data?.error ?? error,
+                order: null
+            }
+        })
+}
+
+api.CompleteServiceOrder = async (orderData) => {
+    ConfigureHeader()
+
+    const body = { ...orderData }
+
+    return await api.post('/serviceorder/completeOrder', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: response.data?.msg,
+                order: response.data?.order
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response.data?.error ?? error,
+                order: null
+            }
+        })
+}
+
+api.PaginatedServiceOrderList = async (filter, pageNumber, rowsPage) => {
+    ConfigureHeader()
+
+    const body = { ...filter, pageNumber: pageNumber - 1, rowsPage }
+
+    return await api.post('/serviceorder/list', body)
+        .then(response => {
+            return {
+                success: true,
+                status: 'success',
+                message: '',
+                total: response.data.total,
+                pages: response.data.pages,
+                serviceOrders: response.data.serviceOrders,
+                totalToday: response.data.totalToday,
+                totalTomorrow: response.data.totalTomorrow,
+                totalThisWeek: response.data.totalThisWeek,
+                totalLate: response.data.totalLate
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            return {
+                success: false,
+                status: 'error',
+                message: error.response?.data?.error ?? error,
+                total: 0,
+                pages: 0,
+                serviceOrders: [],
+                totalToday: 0,
+                totalTomorrow: 0,
+                totalThisWeek: 0,
+                totalLate: 0
+            }
+        })
+}
+//#endregion
+
 //#region DocumentController
 api.GenerateBudgetPDF = async (quote) => {
     ConfigureHeader()

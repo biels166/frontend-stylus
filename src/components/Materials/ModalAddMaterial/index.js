@@ -121,8 +121,6 @@ export const ModalAddMaterial = ({
 
     useEffect(() => { setForm({}) }, [])
 
-    useEffect(() => { console.log('form', form) }, [form])
-
     const handleCloseToast = () => { setOpenToast(false) }
     const handleOnClose = () => {
         handleClear()
@@ -186,10 +184,6 @@ export const ModalAddMaterial = ({
         getCategoryOptions()
         getItemOptions([stockData.categoryCode])
         getSupplierOptions(stockData.categoryCode)
-    }, [])
-
-    useEffect(() => {
-        console.log('stockData', stockData)
     }, [])
 
     return (

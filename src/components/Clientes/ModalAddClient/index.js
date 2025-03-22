@@ -38,7 +38,7 @@ export const ModalAddClient = ({
 
         const response = await api.CreateClient({
             ...form,
-            type: form.document?.replace(/\D/g, '').length === 14 ? 'PJ' : 'PF'
+            type: form.document ? form.document?.replace(/\D/g, '').length === 14 ? 'PJ' : 'PF' : ''
         })
 
         if (response.success) {
@@ -97,7 +97,6 @@ export const ModalAddClient = ({
                                 />
 
                                 <TextField
-                                    required
                                     id="outlined-required-document"
                                     label="Documento"
                                     placeholder="digite o documento do cliente"

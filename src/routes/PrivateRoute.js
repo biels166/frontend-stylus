@@ -22,7 +22,6 @@ export const PrivateRoute = () => {
     const currentPath = location.pathname
 
     React.useEffect(() => {
-        console.log("provate router currente page", location)
     }, [location])
 
     if (loading)
@@ -47,6 +46,7 @@ export const PrivateRoute = () => {
             (currentPath === '/listagem-cotacao' && !quotePage.Viewer) ||
             (currentPath === '/visualizar-cotacao' && !quotePage.Viewer) ||
             (currentPath === '/criar-cotacao' && !quotePage.Creator) ||
+            (currentPath === '/visualizar-ordem' && !orderPage.Viewer) ||
             (currentPath === '/ordens' && !orderPage.Viewer)
         )
     )
