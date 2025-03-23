@@ -19,7 +19,7 @@ export const CustomLinearProgress = ({
         setTimeout(() => {
             clearInterval(timer)
             handleCompleteProgress()
-        }, 4000)
+        }, 2500)
 
         return () => {
             clearInterval(timer)
