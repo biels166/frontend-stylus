@@ -226,7 +226,7 @@ export const NavItems = () => {
             path: '/ordens',
             icon: CustomOSIcon,
             element: <ServiceOrderList />,
-            enable: isAdm,
+            enable: isAdm || orderPage.Viewer,
             show: true,
             children: [
                 {
