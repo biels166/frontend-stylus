@@ -18,6 +18,14 @@ export const CustomLinearProgress = ({
             })
         }, 250)
 
+        if (progress >= 100) {
+            return () => {
+                clearInterval(timer)
+                console.log("pós clearInterval no if")
+                handleCompleteProgress()
+            }
+        }
+
         console.log("concluiu o timer")
 
         return () => {
