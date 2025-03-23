@@ -143,21 +143,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('User', JSON.stringify(userLogin))
 
         validateToken()
-        //    navigate('/home')
     }
 
     const logout = (navigate) => {
-        console.log("chamou logout")
-
         localStorage.removeItem('StylusToken')
         localStorage.removeItem('User')
 
-        console.log("é para ter removido item")
-
         handleResetRoleStates()
         setUser(null)
-
-        //navigate('/login')
     }
 
 
