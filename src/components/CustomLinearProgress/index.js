@@ -8,6 +8,7 @@ export const CustomLinearProgress = ({
     const [progress, setProgress] = React.useState(0)
 
     React.useEffect(() => {
+        console.log("iniciou o timer")
         const timer = setInterval(() => {
             setProgress((oldProgress) => {
 
@@ -16,8 +17,11 @@ export const CustomLinearProgress = ({
             })
         }, 250)
 
+        console.log("concluiu o timer")
+
         return () => {
             clearInterval(timer)
+            console.log("pós clearInterval")
             handleCompleteProgress()
         }
     }, [])
