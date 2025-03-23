@@ -13,6 +13,7 @@ export const CustomLinearProgress = ({
             setProgress((oldProgress) => {
 
                 const diff = Math.random() * 30
+                console.log("diff", diff)
                 return Math.min(oldProgress + diff, 100)
             })
         }, 250)
